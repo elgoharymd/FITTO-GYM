@@ -22,6 +22,8 @@
             --glow-success: 0 0 15px rgba(76, 201, 240, 0.5);
             --glow-danger: 0 0 15px rgba(247, 37, 133, 0.5);
             --glow-warning: 0 0 15px rgba(248, 150, 30, 0.5);
+            --profit-color: #7209b7;
+            --profit-glow: 0 0 15px rgba(114, 9, 183, 0.5);
         }
 
         * {
@@ -80,8 +82,8 @@
         }
 
         .logo {
-            width: 120px; /* تم تكبير حجم اللوجو */
-            height: 120px; /* تم تكبير حجم اللوجو */
+            width: 120px;
+            height: 120px;
             background-color: white;
             border-radius: 50%;
             display: flex;
@@ -217,6 +219,16 @@
             box-shadow: 0 8px 15px rgba(76, 201, 240, 0.4);
         }
 
+        .btn-profit {
+            background-color: var(--profit-color);
+            box-shadow: 0 4px 10px rgba(114, 9, 183, 0.3);
+        }
+
+        .btn-profit:hover {
+            background-color: #5a0891;
+            box-shadow: 0 8px 15px rgba(114, 9, 183, 0.4);
+        }
+
         /* Form Section */
         .form-section {
             background-color: white;
@@ -296,6 +308,11 @@
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3), inset 0 1px 3px rgba(0, 0, 0, 0.1);
             outline: none;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
         }
 
         /* Search Box */
@@ -549,6 +566,10 @@
             box-shadow: var(--glow-danger);
         }
 
+        .stat-card.profit-card:hover {
+            box-shadow: var(--profit-glow);
+        }
+
         .stat-card.active-members::before {
             content: "";
             position: absolute;
@@ -571,6 +592,17 @@
             box-shadow: 0 2px 5px rgba(247, 37, 133, 0.5);
         }
 
+        .stat-card.profit-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--profit-color);
+            box-shadow: 0 2px 5px rgba(114, 9, 183, 0.5);
+        }
+
         .stat-title {
             font-size: 1rem;
             color: var(--dark-color);
@@ -591,6 +623,11 @@
         .stat-card.expired-members .stat-value {
             color: var(--danger-color);
             text-shadow: 0 2px 3px rgba(247, 37, 133, 0.2);
+        }
+
+        .stat-card.profit-card .stat-value {
+            color: var(--profit-color);
+            text-shadow: 0 2px 3px rgba(114, 9, 183, 0.2);
         }
 
         .stat-change {
@@ -718,6 +755,103 @@
             100% { transform: scale(0.95); opacity: 0.7; }
         }
 
+        /* Profit Section */
+        .profit-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+            position: relative;
+        }
+
+        .profit-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, 
+                var(--profit-color), 
+                #9d4edd);
+            box-shadow: 0 2px 5px rgba(114, 9, 183, 0.5);
+        }
+
+        .profit-section h2 {
+            color: var(--profit-color);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .profit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .profit-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .profit-table th,
+        .profit-table td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .profit-table th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+            color: var(--dark-color);
+            position: sticky;
+            top: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .profit-table tr {
+            transition: var(--transition);
+        }
+
+        .profit-table tr:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .profit-amount {
+            font-weight: 700;
+            color: var(--profit-color);
+        }
+
+        /* Member Name Border */
+        .member-name {
+            position: relative;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+
+        .member-name::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 1px solid rgba(67, 97, 238, 0.3);
+            border-radius: 4px;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .members-table tr:hover .member-name::after {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(67, 97, 238, 0.3);
+        }
+
         /* Responsive Adjustments */
         @media (max-width: 768px) {
             .header h1 {
@@ -750,6 +884,12 @@
             
             .stats-section {
                 grid-template-columns: 1fr;
+            }
+            
+            .profit-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
             }
         }
 
@@ -809,7 +949,7 @@
                 <div class="club-name">FITTO GYM</div>
             </div>
             <h1>نظام إدارة المشتركين</h1>
-            <p>إدارة كاملة لأعضاء النادي وتتبع الاشتراكات</p>
+            <p>إدارة كاملة لأعضاء النادي وتتبع الاشتراكات والأرباح</p>
         </header>
 
         <!-- إحصائيات المشتركين -->
@@ -823,6 +963,11 @@
                 <h3 class="stat-title">المشتركين المنتهية اشتراكاتهم</h3>
                 <div class="stat-value" id="expiredMembersCount">0</div>
                 <div class="stat-change">بحاجة إلى تجديد</div>
+            </div>
+            <div class="stat-card profit-card">
+                <h3 class="stat-title">إجمالي الأرباح الشهرية</h3>
+                <div class="stat-value" id="monthlyProfit">0 E.G</div>
+                <div class="stat-change">إجمالي المبالغ المحصلة</div>
             </div>
         </div>
 
@@ -876,12 +1021,12 @@
                 
                 <div class="form-group">
                     <label for="subscriptionFee"><i class="fas fa-money-bill-wave"></i> رسوم الاشتراك الكاملة</label>
-                    <input type="number" id="subscriptionFee" class="form-control" required min="0" step="any"> <!-- تم تعديله لقبول أي رقم -->
+                    <input type="number" id="subscriptionFee" class="form-control" required min="0" step="any">
                 </div>
                 
                 <div class="form-group">
                     <label for="amountPaid"><i class="fas fa-hand-holding-usd"></i> المبلغ المدفوع</label>
-                    <input type="number" id="amountPaid" class="form-control" required min="0" step="any"> <!-- تم تعديله لقبول أي رقم -->
+                    <input type="number" id="amountPaid" class="form-control" required min="0" step="any">
                 </div>
                 
                 <div class="form-group">
@@ -890,6 +1035,11 @@
                         <option value="paid">مسدد</option>
                         <option value="unpaid">غير مسدد</option>
                     </select>
+                </div>
+                
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label for="notes"><i class="fas fa-sticky-note"></i> ملاحظات (اختياري)</label>
+                    <textarea id="notes" class="form-control" placeholder="أي ملاحظات إضافية عن المشترك..."></textarea>
                 </div>
                 
                 <div class="form-group" style="grid-column: 1 / -1;">
@@ -904,6 +1054,33 @@
                     </button>
                 </div>
             </form>
+        </section>
+        
+        <!-- قسم الأرباح الشهرية -->
+        <section class="profit-section fade-in">
+            <div class="profit-header">
+                <h2><i class="fas fa-chart-line"></i> الأرباح الشهرية</h2>
+                <button class="btn btn-danger" id="clearProfitsBtn">
+                    <i class="fas fa-trash"></i> حذف جميع البيانات
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="profit-table">
+                    <thead>
+                        <tr>
+                            <th>الشهر</th>
+                            <th>عدد المشتركين الجدد</th>
+                            <th>إجمالي المبالغ</th>
+                            <th>المبالغ المحصلة</th>
+                            <th>المبالغ المتبقية</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="profitList">
+                        <!-- سيتم ملء هذا القسم بالبيانات من Firebase -->
+                    </tbody>
+                </table>
+            </div>
         </section>
         
         <!-- قوائم المشتركين -->
@@ -1023,6 +1200,7 @@
         // Initialize Realtime Database
         const database = firebase.database();
         const membersRef = database.ref('members');
+        const profitsRef = database.ref('profits');
 
         // DOM elements
         const toggleFormBtn = document.getElementById('toggleFormBtn');
@@ -1033,6 +1211,8 @@
         const expiredMembersList = document.getElementById('expiredMembersList');
         const activeMembersCount = document.getElementById('activeMembersCount');
         const expiredMembersCount = document.getElementById('expiredMembersCount');
+        const monthlyProfit = document.getElementById('monthlyProfit');
+        const profitList = document.getElementById('profitList');
         const subscriptionMonths = document.getElementById('subscriptionMonths');
         const startDateInput = document.getElementById('startDate');
         const endDateInput = document.getElementById('endDate');
@@ -1048,11 +1228,13 @@
         const toastMessage = document.getElementById('toast-message');
         const clubLogo = document.getElementById('clubLogo');
         const searchInput = document.getElementById('searchInput');
+        const clearProfitsBtn = document.getElementById('clearProfitsBtn');
 
         // متغير لتحديد ما إذا كنا في وضع التعديل
         let isEditMode = false;
         let currentMemberId = null;
         let allMembers = [];
+        let monthlyProfits = {};
 
         // عرض/إخفاء نموذج الإضافة
         toggleFormBtn.addEventListener('click', function() {
@@ -1126,6 +1308,7 @@
             const subscriptionFee = parseFloat(subscriptionFeeInput.value);
             const amountPaid = parseFloat(document.getElementById('amountPaid').value) || 0;
             const paymentStatus = document.getElementById('paymentStatus').value;
+            const notes = document.getElementById('notes').value.trim();
             
             if (!name || !phone || !startDate || !endDate || isNaN(subscriptionFee)) {
                 showToast('الرجاء تعبئة جميع الحقول المطلوبة', 'error');
@@ -1145,6 +1328,7 @@
                 subscriptionFee: subscriptionFee,
                 amountPaid: amountPaid,
                 paymentStatus: paymentStatus,
+                notes: notes,
                 updatedAt: firebase.database.ServerValue.TIMESTAMP
             };
             
@@ -1175,6 +1359,9 @@
                 .then(() => {
                     showToast('تم إضافة العضو الجديد بنجاح');
                     resetForm();
+                    
+                    // تحديث إحصائيات الأرباح الشهرية
+                    updateMonthlyProfit(startDate, subscriptionFee, amountPaid);
                 })
                 .catch(error => {
                     showToast('حدث خطأ أثناء إضافة العضو: ' + error.message, 'error');
@@ -1183,6 +1370,54 @@
                     submitBtn.innerHTML = '<i class="fas fa-save"></i> حفظ العضو';
                     submitBtn.disabled = false;
                 });
+            }
+        });
+
+        // تحديث إحصائيات الأرباح الشهرية
+        function updateMonthlyProfit(startDate, subscriptionFee, amountPaid) {
+            const date = new Date(startDate);
+            const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+            
+            profitsRef.child(monthYear).transaction(currentData => {
+                if (currentData) {
+                    return {
+                        totalSubscriptions: currentData.totalSubscriptions + 1,
+                        totalAmount: currentData.totalAmount + subscriptionFee,
+                        collectedAmount: currentData.collectedAmount + amountPaid,
+                        remainingAmount: currentData.remainingAmount + (subscriptionFee - amountPaid),
+                        lastUpdated: firebase.database.ServerValue.TIMESTAMP
+                    };
+                } else {
+                    return {
+                        totalSubscriptions: 1,
+                        totalAmount: subscriptionFee,
+                        collectedAmount: amountPaid,
+                        remainingAmount: subscriptionFee - amountPaid,
+                        lastUpdated: firebase.database.ServerValue.TIMESTAMP
+                    };
+                }
+            });
+        }
+
+        // حذف جميع بيانات الأرباح
+        clearProfitsBtn.addEventListener('click', function() {
+            if (confirm('هل أنت متأكد من حذف جميع بيانات الأرباح الشهرية؟ لا يمكن التراجع عن هذه العملية.')) {
+                clearProfitsBtn.innerHTML = '<div class="spinner"></div> جاري الحذف...';
+                clearProfitsBtn.disabled = true;
+                
+                profitsRef.remove()
+                    .then(() => {
+                        showToast('تم حذف جميع بيانات الأرباح الشهرية بنجاح');
+                        monthlyProfits = {};
+                        renderMonthlyProfits();
+                    })
+                    .catch(error => {
+                        showToast('حدث خطأ أثناء حذف بيانات الأرباح: ' + error.message, 'error');
+                    })
+                    .finally(() => {
+                        clearProfitsBtn.innerHTML = '<i class="fas fa-trash"></i> حذف جميع البيانات';
+                        clearProfitsBtn.disabled = false;
+                    });
             }
         });
 
@@ -1238,6 +1473,7 @@
                     subscriptionFeeInput.value = member.subscriptionFee;
                     document.getElementById('amountPaid').value = member.amountPaid;
                     document.getElementById('paymentStatus').value = member.paymentStatus;
+                    document.getElementById('notes').value = member.notes || '';
                     
                     // تغيير إلى وضع التعديل
                     isEditMode = true;
@@ -1341,6 +1577,13 @@
             return date.toLocaleDateString('ar-EG', options);
         }
 
+        // تنسيق اسم الشهر
+        function formatMonthYear(monthYear) {
+            const [year, month] = monthYear.split('-');
+            const date = new Date(year, month - 1);
+            return date.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long' });
+        }
+
         // البحث عن المشتركين
         function searchMembers(query) {
             const normalizedQuery = query.toLowerCase().trim();
@@ -1394,7 +1637,7 @@
                 const row = document.createElement('tr');
                 row.className = isActive ? 'active-member' : 'expired-member';
                 row.innerHTML = `
-                    <td>${member.name}</td>
+                    <td><div class="member-name">${member.name}</div></td>
                     <td>${member.phone}</td>
                     <td>${formatDate(member.startDate)}</td>
                     <td>${formatDate(member.endDate)}</td>
@@ -1423,6 +1666,9 @@
                             ${!isActive ? `<button class="btn btn-sm btn-success" onclick="renewSubscription('${member.id}')" title="تجديد">
                                 <i class="fas fa-sync-alt"></i>
                             </button>` : ''}
+                            ${member.notes ? `<button class="btn btn-sm btn-profit" onclick="showNotes('${member.id}')" title="عرض الملاحظات">
+                                <i class="fas fa-sticky-note"></i>
+                            </button>` : ''}
                         </div>
                     </td>
                 `;
@@ -1442,7 +1688,7 @@
                     const activeRow = document.createElement('tr');
                     activeRow.className = 'active-member';
                     activeRow.innerHTML = `
-                        <td>${member.name}</td>
+                        <td><div class="member-name">${member.name}</div></td>
                         <td>${member.phone}</td>
                         <td>${formatDate(member.startDate)}</td>
                         <td>${formatDate(member.endDate)}</td>
@@ -1462,6 +1708,9 @@
                                 <button class="btn btn-sm btn-danger" onclick="deleteMember('${member.id}')" title="حذف">
                                     <i class="fas fa-trash"></i>
                                 </button>
+                                ${member.notes ? `<button class="btn btn-sm btn-profit" onclick="showNotes('${member.id}')" title="عرض الملاحظات">
+                                    <i class="fas fa-sticky-note"></i>
+                                </button>` : ''}
                             </div>
                         </td>
                     `;
@@ -1482,7 +1731,7 @@
                     const expiredRow = document.createElement('tr');
                     expiredRow.className = 'expired-member';
                     expiredRow.innerHTML = `
-                        <td>${member.name}</td>
+                        <td><div class="member-name">${member.name}</div></td>
                         <td>${member.phone}</td>
                         <td>${formatDate(member.startDate)}</td>
                         <td>${formatDate(member.endDate)}</td>
@@ -1505,6 +1754,9 @@
                                 <button class="btn btn-sm btn-danger" onclick="deleteMember('${member.id}')" title="حذف">
                                     <i class="fas fa-trash"></i>
                                 </button>
+                                ${member.notes ? `<button class="btn btn-sm btn-profit" onclick="showNotes('${member.id}')" title="عرض الملاحظات">
+                                    <i class="fas fa-sticky-note"></i>
+                                </button>` : ''}
                             </div>
                         </td>
                     `;
@@ -1524,6 +1776,85 @@
             // تحديث الإحصائيات
             activeMembersCount.textContent = activeCount;
             expiredMembersCount.textContent = expiredCount;
+            
+            // حساب إجمالي الأرباح الشهرية
+            calculateMonthlyProfit();
+        }
+
+        // عرض ملاحظات المشترك
+        function showNotes(memberId) {
+            const member = allMembers.find(m => m.id === memberId);
+            if (!member || !member.notes) return;
+            
+            alert(`ملاحظات عن المشترك ${member.name}:\n\n${member.notes}`);
+        }
+
+        // عرض الأرباح الشهرية
+        function renderMonthlyProfits() {
+            profitList.innerHTML = '';
+            
+            // فرز الأشهر من الأحدث إلى الأقدم
+            const sortedMonths = Object.keys(monthlyProfits).sort().reverse();
+            
+            sortedMonths.forEach(monthYear => {
+                const profit = monthlyProfits[monthYear];
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${formatMonthYear(monthYear)}</td>
+                    <td>${profit.totalSubscriptions}</td>
+                    <td class="profit-amount">${profit.totalAmount} E.G</td>
+                    <td class="profit-amount">${profit.collectedAmount} E.G</td>
+                    <td class="profit-amount">${profit.remainingAmount} E.G</td>
+                    <td>
+                        <button class="btn btn-sm btn-profit" onclick="viewMonthDetails('${monthYear}')" title="عرض التفاصيل">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                
+                profitList.appendChild(row);
+            });
+            
+            // حساب إجمالي الأرباح الشهرية
+            calculateMonthlyProfit();
+        }
+
+        // عرض تفاصيل شهر معين
+        function viewMonthDetails(monthYear) {
+            const [year, month] = monthYear.split('-');
+            const startDate = new Date(year, month - 1, 1);
+            const endDate = new Date(year, month, 0);
+            
+            const monthMembers = allMembers.filter(member => {
+                const memberDate = new Date(member.startDate);
+                return memberDate >= startDate && memberDate <= endDate;
+            });
+            
+            let message = `تفاصيل شهر ${formatMonthYear(monthYear)}:\n\n`;
+            message += `عدد المشتركين: ${monthMembers.length}\n`;
+            message += `إجمالي المبالغ: ${monthlyProfits[monthYear].totalAmount} E.G\n`;
+            message += `المبالغ المحصلة: ${monthlyProfits[monthYear].collectedAmount} E.G\n`;
+            message += `المبالغ المتبقية: ${monthlyProfits[monthYear].remainingAmount} E.G\n\n`;
+            message += `قائمة المشتركين:\n`;
+            
+            monthMembers.forEach((member, index) => {
+                message += `${index + 1}. ${member.name} - ${member.amountPaid} E.G (${member.paymentStatus === 'paid' ? 'مسدد' : 'غير مسدد'})\n`;
+            });
+            
+            alert(message);
+        }
+
+        // حساب إجمالي الأرباح الشهرية
+        function calculateMonthlyProfit() {
+            const currentMonthYear = new Date().toISOString().slice(0, 7);
+            const currentMonthProfit = monthlyProfits[currentMonthYear] || {
+                totalAmount: 0,
+                collectedAmount: 0,
+                remainingAmount: 0
+            };
+            
+            monthlyProfit.textContent = `${currentMonthProfit.collectedAmount} E.G`;
         }
 
         // تحديث قوائم المشتركين عند تغيير البيانات في Firebase
@@ -1537,6 +1868,12 @@
             });
             
             renderMembers(allMembers);
+        });
+
+        // تحديث إحصائيات الأرباح الشهرية
+        profitsRef.on('value', function(snapshot) {
+            monthlyProfits = snapshot.val() || {};
+            renderMonthlyProfits();
         });
 
         // البحث عند كتابة نص في صندوق البحث
@@ -1557,6 +1894,8 @@
             window.editMember = editMember;
             window.deleteMember = deleteMember;
             window.renewSubscription = renewSubscription;
+            window.showNotes = showNotes;
+            window.viewMonthDetails = viewMonthDetails;
         });
     </script>
 </body>
