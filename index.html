@@ -80,8 +80,8 @@
         }
 
         .logo {
-            width: 100px;
-            height: 100px;
+            width: 120px; /* تم تكبير حجم اللوجو */
+            height: 120px; /* تم تكبير حجم اللوجو */
             background-color: white;
             border-radius: 50%;
             display: flex;
@@ -298,6 +298,36 @@
             outline: none;
         }
 
+        /* Search Box */
+        .search-container {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.75rem 1.5rem 0.75rem 3rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+        }
+
+        .search-box:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
         /* Table Section */
         .table-section {
             background-color: white;
@@ -367,6 +397,45 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             z-index: 1;
+        }
+
+        /* حلقة دائرية حول المشترك */
+        .member-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: calc(100% + 20px);
+            height: calc(100% + 20px);
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            opacity: 0;
+            transition: var(--transition);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .members-table tr:hover .member-circle {
+            opacity: 0.3;
+        }
+
+        /* فاصل مضيء بين المشتركين */
+        .member-separator {
+            position: relative;
+        }
+
+        .member-separator::after {
+            content: "";
+            position: absolute;
+            bottom: -1px;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(67, 97, 238, 0.5), 
+                transparent);
+            box-shadow: 0 0 10px rgba(67, 97, 238, 0.3);
         }
 
         /* Member Glow Effect */
@@ -660,8 +729,8 @@
             }
             
             .logo {
-                width: 80px;
-                height: 80px;
+                width: 100px;
+                height: 100px;
             }
             
             .btn {
@@ -807,12 +876,12 @@
                 
                 <div class="form-group">
                     <label for="subscriptionFee"><i class="fas fa-money-bill-wave"></i> رسوم الاشتراك الكاملة</label>
-                    <input type="number" id="subscriptionFee" class="form-control" required min="0" step="50">
+                    <input type="number" id="subscriptionFee" class="form-control" required min="0" step="any"> <!-- تم تعديله لقبول أي رقم -->
                 </div>
                 
                 <div class="form-group">
                     <label for="amountPaid"><i class="fas fa-hand-holding-usd"></i> المبلغ المدفوع</label>
-                    <input type="number" id="amountPaid" class="form-control" required min="0" step="50">
+                    <input type="number" id="amountPaid" class="form-control" required min="0" step="any"> <!-- تم تعديله لقبول أي رقم -->
                 </div>
                 
                 <div class="form-group">
@@ -843,6 +912,12 @@
                 <div class="tab active" data-tab="all">جميع المشتركين</div>
                 <div class="tab" data-tab="active">المشتركين النشطين</div>
                 <div class="tab" data-tab="expired">الاشتراكات المنتهية</div>
+            </div>
+            
+            <!-- صندوق البحث -->
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" class="search-box" placeholder="ابحث عن مشترك بالاسم أو رقم الهاتف...">
             </div>
             
             <div class="tab-content active" id="all-members">
@@ -972,10 +1047,12 @@
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
         const clubLogo = document.getElementById('clubLogo');
+        const searchInput = document.getElementById('searchInput');
 
         // متغير لتحديد ما إذا كنا في وضع التعديل
         let isEditMode = false;
         let currentMemberId = null;
+        let allMembers = [];
 
         // عرض/إخفاء نموذج الإضافة
         toggleFormBtn.addEventListener('click', function() {
@@ -1264,8 +1341,28 @@
             return date.toLocaleDateString('ar-EG', options);
         }
 
-        // تحديث قوائم المشتركين عند تغيير البيانات في Firebase
-        membersRef.on('value', function(snapshot) {
+        // البحث عن المشتركين
+        function searchMembers(query) {
+            const normalizedQuery = query.toLowerCase().trim();
+            
+            if (!normalizedQuery) {
+                // إذا كان صندوق البحث فارغاً، عرض جميع المشتركين
+                renderMembers(allMembers);
+                return;
+            }
+            
+            const filteredMembers = allMembers.filter(member => {
+                return (
+                    member.name.toLowerCase().includes(normalizedQuery) ||
+                    member.phone.includes(normalizedQuery)
+                );
+            });
+            
+            renderMembers(filteredMembers);
+        }
+
+        // عرض المشتركين في الجداول
+        function renderMembers(members) {
             membersList.innerHTML = '';
             activeMembersList.innerHTML = '';
             expiredMembersList.innerHTML = '';
@@ -1274,10 +1371,7 @@
             let expiredCount = 0;
             const today = new Date();
             
-            snapshot.forEach(childSnapshot => {
-                const member = childSnapshot.val();
-                const memberId = childSnapshot.key;
-                
+            members.forEach(member => {
                 const remainingAmount = member.subscriptionFee - member.amountPaid;
                 const isPaid = member.paymentStatus === 'paid';
                 const statusClass = isPaid ? 'status-paid' : 'status-unpaid';
@@ -1320,18 +1414,27 @@
                     <td class="amount ${amountClass}">${amountText}</td>
                     <td>
                         <div class="action-buttons">
-                            <button class="btn btn-sm" onclick="editMember('${memberId}')" title="تعديل">
+                            <button class="btn btn-sm" onclick="editMember('${member.id}')" title="تعديل">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteMember('${memberId}')" title="حذف">
+                            <button class="btn btn-sm btn-danger" onclick="deleteMember('${member.id}')" title="حذف">
                                 <i class="fas fa-trash"></i>
                             </button>
-                            ${!isActive ? `<button class="btn btn-sm btn-success" onclick="renewSubscription('${memberId}')" title="تجديد">
+                            ${!isActive ? `<button class="btn btn-sm btn-success" onclick="renewSubscription('${member.id}')" title="تجديد">
                                 <i class="fas fa-sync-alt"></i>
                             </button>` : ''}
                         </div>
                     </td>
                 `;
+                
+                // إضافة حلقة دائرية حول المشترك
+                const circle = document.createElement('div');
+                circle.className = 'member-circle';
+                row.appendChild(circle);
+                
+                // إضافة فاصل مضيء
+                row.classList.add('member-separator');
+                
                 membersList.appendChild(row);
                 
                 // قائمة المشتركين النشطين
@@ -1353,15 +1456,24 @@
                         <td class="amount ${amountClass}">${amountText}</td>
                         <td>
                             <div class="action-buttons">
-                                <button class="btn btn-sm" onclick="editMember('${memberId}')" title="تعديل">
+                                <button class="btn btn-sm" onclick="editMember('${member.id}')" title="تعديل">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteMember('${memberId}')" title="حذف">
+                                <button class="btn btn-sm btn-danger" onclick="deleteMember('${member.id}')" title="حذف">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
                         </td>
                     `;
+                    
+                    // إضافة حلقة دائرية حول المشترك
+                    const activeCircle = document.createElement('div');
+                    activeCircle.className = 'member-circle';
+                    activeRow.appendChild(activeCircle);
+                    
+                    // إضافة فاصل مضيء
+                    activeRow.classList.add('member-separator');
+                    
                     activeMembersList.appendChild(activeRow);
                 }
                 
@@ -1384,18 +1496,27 @@
                         <td class="amount ${amountClass}">${amountText}</td>
                         <td>
                             <div class="action-buttons">
-                                <button class="btn btn-sm btn-success" onclick="renewSubscription('${memberId}')" title="تجديد">
+                                <button class="btn btn-sm btn-success" onclick="renewSubscription('${member.id}')" title="تجديد">
                                     <i class="fas fa-sync-alt"></i>
                                 </button>
-                                <button class="btn btn-sm" onclick="editMember('${memberId}')" title="تعديل">
+                                <button class="btn btn-sm" onclick="editMember('${member.id}')" title="تعديل">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteMember('${memberId}')" title="حذف">
+                                <button class="btn btn-sm btn-danger" onclick="deleteMember('${member.id}')" title="حذف">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
                         </td>
                     `;
+                    
+                    // إضافة حلقة دائرية حول المشترك
+                    const expiredCircle = document.createElement('div');
+                    expiredCircle.className = 'member-circle';
+                    expiredRow.appendChild(expiredCircle);
+                    
+                    // إضافة فاصل مضيء
+                    expiredRow.classList.add('member-separator');
+                    
                     expiredMembersList.appendChild(expiredRow);
                 }
             });
@@ -1403,6 +1524,24 @@
             // تحديث الإحصائيات
             activeMembersCount.textContent = activeCount;
             expiredMembersCount.textContent = expiredCount;
+        }
+
+        // تحديث قوائم المشتركين عند تغيير البيانات في Firebase
+        membersRef.on('value', function(snapshot) {
+            allMembers = [];
+            
+            snapshot.forEach(childSnapshot => {
+                const member = childSnapshot.val();
+                member.id = childSnapshot.key;
+                allMembers.push(member);
+            });
+            
+            renderMembers(allMembers);
+        });
+
+        // البحث عند كتابة نص في صندوق البحث
+        searchInput.addEventListener('input', function() {
+            searchMembers(this.value);
         });
 
         // التحميل الأولي للصفحة
