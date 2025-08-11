@@ -9,21 +9,27 @@
     <style>
         :root {
             --primary-color: #4361ee;
+            --primary-light: #e0e7ff;
             --secondary-color: #3f37c9;
-            --success-color: #4cc9f0;
-            --danger-color: #f72585;
-            --warning-color: #f8961e;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
-            --border-radius: 0.5rem;
-            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            --transition: all 0.3s ease;
-            --glow-effect: 0 0 15px rgba(67, 97, 238, 0.5);
-            --glow-success: 0 0 15px rgba(76, 201, 240, 0.5);
-            --glow-danger: 0 0 15px rgba(247, 37, 133, 0.5);
-            --glow-warning: 0 0 15px rgba(248, 150, 30, 0.5);
-            --profit-color: #7209b7;
-            --profit-glow: 0 0 15px rgba(114, 9, 183, 0.5);
+            --success-color: #10b981;
+            --success-light: #d1fae5;
+            --danger-color: #ef4444;
+            --danger-light: #fee2e2;
+            --warning-color: #f59e0b;
+            --warning-light: #fef3c7;
+            --info-color: #3b82f6;
+            --info-light: #dbeafe;
+            --dark-color: #1f2937;
+            --light-color: #f9fafb;
+            --gray-color: #6b7280;
+            --border-radius: 0.75rem;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --glow-effect: 0 0 15px rgba(67, 97, 238, 0.3);
+            --profit-color: #7c3aed;
+            --profit-light: #ede9fe;
+            --daily-profit-color: #3a7bed;
+            --daily-profit-light: #e9f4fe;
         }
 
         * {
@@ -37,25 +43,27 @@
             background-color: #f5f7fa;
             color: var(--dark-color);
             line-height: 1.6;
+            scroll-behavior: smooth;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 1rem;
+            padding: 1.5rem;
         }
 
         /* Header Styles */
         .header {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            padding: 1.5rem;
+            padding: 2rem;
             border-radius: var(--border-radius);
             margin-bottom: 2rem;
             box-shadow: var(--box-shadow);
             text-align: center;
             position: relative;
             overflow: hidden;
+            animation: fadeInDown 0.8s ease;
         }
 
         .header::before {
@@ -93,6 +101,12 @@
             overflow: hidden;
             margin-bottom: 10px;
             position: relative;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
         }
 
         .logo::after {
@@ -130,13 +144,16 @@
 
         /* Button Styles */
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             padding: 0.75rem 1.5rem;
             border: none;
             border-radius: var(--border-radius);
             background-color: var(--primary-color);
             color: white;
             font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
             margin-bottom: 1.5rem;
@@ -149,6 +166,10 @@
             background-color: var(--secondary-color);
             transform: translateY(-2px);
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
         }
 
         .btn::after {
@@ -175,9 +196,9 @@
         }
 
         .btn-sm {
-            padding: 0.5rem;
+            padding: 0.5rem 1rem;
             font-size: 0.875rem;
-            width: 35px;
+            min-width: 35px;
             height: 35px;
             display: inline-flex;
             align-items: center;
@@ -191,42 +212,85 @@
 
         .btn-danger {
             background-color: var(--danger-color);
-            box-shadow: 0 4px 10px rgba(247, 37, 133, 0.3);
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
         }
 
         .btn-danger:hover {
-            background-color: #e5177e;
-            box-shadow: 0 8px 15px rgba(247, 37, 133, 0.4);
+            background-color: #dc2626;
+            box-shadow: 0 8px 15px rgba(239, 68, 68, 0.4);
         }
 
         .btn-warning {
             background-color: var(--warning-color);
-            box-shadow: 0 4px 10px rgba(248, 150, 30, 0.3);
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
         }
 
         .btn-warning:hover {
-            background-color: #e6871b;
-            box-shadow: 0 8px 15px rgba(248, 150, 30, 0.4);
+            background-color: #d97706;
+            box-shadow: 0 8px 15px rgba(245, 158, 11, 0.4);
         }
 
         .btn-success {
             background-color: var(--success-color);
-            box-shadow: 0 4px 10px rgba(76, 201, 240, 0.3);
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
         }
 
         .btn-success:hover {
-            background-color: #3ab8d9;
-            box-shadow: 0 8px 15px rgba(76, 201, 240, 0.4);
+            background-color: #059669;
+            box-shadow: 0 8px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-info {
+            background-color: var(--info-color);
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-info:hover {
+            background-color: #2563eb;
+            box-shadow: 0 8px 15px rgba(59, 130, 246, 0.4);
         }
 
         .btn-profit {
             background-color: var(--profit-color);
-            box-shadow: 0 4px 10px rgba(114, 9, 183, 0.3);
+            box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
         }
 
         .btn-profit:hover {
-            background-color: #5a0891;
-            box-shadow: 0 8px 15px rgba(114, 9, 183, 0.4);
+            background-color: #6d28d9;
+            box-shadow: 0 8px 15px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-daily-profit {
+            background-color: var(--daily-profit-color);
+            box-shadow: 0 4px 10px rgba(58, 123, 237, 0.3);
+        }
+
+        .btn-daily-profit:hover {
+            background-color: #2563eb;
+            box-shadow: 0 8px 15px rgba(58, 123, 237, 0.4);
+        }
+
+        .btn-light {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-light:hover {
+            background-color: #e5e7eb;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
         }
 
         /* Form Section */
@@ -236,19 +300,19 @@
             padding: 2rem;
             margin-bottom: 2rem;
             box-shadow: var(--box-shadow);
-            transition: var(--transition);
+            transition: all 0.5s ease;
             opacity: 0;
-            position: relative;
-            height: 0;
+            max-height: 0;
             overflow: hidden;
-            transition: all 0.3s ease;
+            position: relative;
         }
 
         .form-section.active {
-            height: auto;
+            max-height: 2000px;
             opacity: 1;
             margin-bottom: 2rem;
             overflow: visible;
+            animation: fadeInUp 0.5s ease;
         }
 
         .form-section::before {
@@ -262,6 +326,7 @@
                 var(--success-color), 
                 var(--primary-color));
             box-shadow: 0 2px 5px rgba(76, 201, 240, 0.5);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
         }
 
         .form-section h2 {
@@ -270,6 +335,9 @@
             padding-bottom: 0.5rem;
             border-bottom: 2px solid #eee;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .form-grid {
@@ -291,23 +359,28 @@
             margin-bottom: 0.5rem;
             font-weight: 600;
             color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .form-control {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
             border-radius: var(--border-radius);
             font-size: 1rem;
             transition: var(--transition);
             font-family: 'Tajawal', sans-serif;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+            background-color: var(--light-color);
         }
 
         .form-control:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3), inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2), inset 0 1px 3px rgba(0, 0, 0, 0.05);
             outline: none;
+            background-color: white;
         }
 
         textarea.form-control {
@@ -324,17 +397,19 @@
         .search-box {
             width: 100%;
             padding: 0.75rem 1.5rem 0.75rem 3rem;
-            border: 1px solid #ddd;
+            border: 1px solid #e5e7eb;
             border-radius: var(--border-radius);
             font-size: 1rem;
             transition: var(--transition);
             box-shadow: var(--box-shadow);
+            background-color: var(--light-color);
         }
 
         .search-box:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
             outline: none;
+            background-color: white;
         }
 
         .search-icon {
@@ -342,18 +417,79 @@
             top: 50%;
             right: 1rem;
             transform: translateY(-50%);
-            color: #6c757d;
+            color: var(--gray-color);
+        }
+
+        /* Accordion Styles */
+        .accordion {
+            margin-bottom: 2rem;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+
+        .accordion-item {
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .accordion-item:last-child {
+            border-bottom: none;
+        }
+
+        .accordion-header {
+            padding: 1.25rem 1.5rem;
+            background-color: var(--light-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .accordion-header:hover {
+            background-color: #f3f4f6;
+        }
+
+        .accordion-header.active {
+            background-color: var(--primary-light);
+        }
+
+        .accordion-title {
+            font-weight: 600;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .accordion-icon {
+            transition: var(--transition);
+        }
+
+        .accordion-header.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion-content-inner {
+            padding: 1.5rem;
         }
 
         /* Table Section */
         .table-section {
             background-color: white;
             border-radius: var(--border-radius);
-            padding: 2rem;
             box-shadow: var(--box-shadow);
-            overflow-x: auto;
+            overflow: hidden;
             margin-bottom: 2rem;
             position: relative;
+            animation: fadeIn 0.6s ease;
         }
 
         .table-section::before {
@@ -373,6 +509,9 @@
             color: var(--primary-color);
             margin-bottom: 1.5rem;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .table-responsive {
@@ -392,11 +531,11 @@
         .members-table td {
             padding: 1rem;
             text-align: center;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #f3f4f6;
         }
 
         .members-table th {
-            background-color: #f8f9fa;
+            background-color: #f9fafb;
             font-weight: 700;
             color: var(--dark-color);
             position: sticky;
@@ -410,73 +549,10 @@
         }
 
         .members-table tr:hover {
-            background-color: #f8f9fa;
+            background-color: #f9fafb;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             z-index: 1;
-        }
-
-        /* حلقة دائرية حول المشترك */
-        .member-circle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: calc(100% + 20px);
-            height: calc(100% + 20px);
-            border-radius: 50%;
-            border: 2px solid var(--primary-color);
-            opacity: 0;
-            transition: var(--transition);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .members-table tr:hover .member-circle {
-            opacity: 0.3;
-        }
-
-        /* فاصل مضيء بين المشتركين */
-        .member-separator {
-            position: relative;
-        }
-
-        .member-separator::after {
-            content: "";
-            position: absolute;
-            bottom: -1px;
-            left: 10%;
-            right: 10%;
-            height: 1px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(67, 97, 238, 0.5), 
-                transparent);
-            box-shadow: 0 0 10px rgba(67, 97, 238, 0.3);
-        }
-
-        /* Member Glow Effect */
-        .members-table tr::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 5px;
-            pointer-events: none;
-            opacity: 0;
-            transition: var(--transition);
-        }
-
-        .members-table tr.active-member:hover::after {
-            opacity: 1;
-            box-shadow: var(--glow-success);
-        }
-
-        .members-table tr.expired-member:hover::after {
-            opacity: 1;
-            box-shadow: var(--glow-danger);
         }
 
         /* Status Styles */
@@ -487,31 +563,27 @@
             border-radius: 1rem;
             font-size: 0.875rem;
             font-weight: 600;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .status-active {
-            background-color: rgba(76, 201, 240, 0.1);
+            background-color: var(--success-light);
             color: var(--success-color);
-            text-shadow: 0 1px 1px rgba(76, 201, 240, 0.3);
         }
 
         .status-expired {
-            background-color: rgba(247, 37, 133, 0.1);
+            background-color: var(--danger-light);
             color: var(--danger-color);
-            text-shadow: 0 1px 1px rgba(247, 37, 133, 0.3);
         }
 
         .status-paid {
-            background-color: rgba(76, 201, 240, 0.1);
+            background-color: var(--success-light);
             color: var(--success-color);
-            text-shadow: 0 1px 1px rgba(76, 201, 240, 0.3);
         }
 
         .status-unpaid {
-            background-color: rgba(247, 37, 133, 0.1);
+            background-color: var(--danger-light);
             color: var(--danger-color);
-            text-shadow: 0 1px 1px rgba(247, 37, 133, 0.3);
         }
 
         .status-icon {
@@ -526,12 +598,10 @@
 
         .amount-remaining {
             color: var(--success-color);
-            text-shadow: 0 1px 1px rgba(76, 201, 240, 0.3);
         }
 
         .amount-due {
             color: var(--danger-color);
-            text-shadow: 0 1px 1px rgba(247, 37, 133, 0.3);
         }
 
         /* Stats Cards */
@@ -540,6 +610,7 @@
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
+            animation: fadeIn 0.6s ease;
         }
 
         .stat-card {
@@ -555,57 +626,59 @@
 
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
         .stat-card.active-members:hover {
-            box-shadow: var(--glow-success);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
         }
 
         .stat-card.expired-members:hover {
-            box-shadow: var(--glow-danger);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
         }
 
         .stat-card.profit-card:hover {
-            box-shadow: var(--profit-glow);
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.2);
+        }
+
+        .stat-card.daily-profit-card:hover {
+            box-shadow: 0 0 20px rgba(58, 123, 237, 0.2);
+        }
+
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--primary-color);
+            box-shadow: 0 2px 5px rgba(67, 97, 238, 0.5);
         }
 
         .stat-card.active-members::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
             background: var(--success-color);
-            box-shadow: 0 2px 5px rgba(76, 201, 240, 0.5);
+            box-shadow: 0 2px 5px rgba(16, 185, 129, 0.5);
         }
 
         .stat-card.expired-members::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
             background: var(--danger-color);
-            box-shadow: 0 2px 5px rgba(247, 37, 133, 0.5);
+            box-shadow: 0 2px 5px rgba(239, 68, 68, 0.5);
         }
 
         .stat-card.profit-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
             background: var(--profit-color);
-            box-shadow: 0 2px 5px rgba(114, 9, 183, 0.5);
+            box-shadow: 0 2px 5px rgba(124, 58, 237, 0.5);
+        }
+
+        .stat-card.daily-profit-card::before {
+            background: var(--daily-profit-color);
+            box-shadow: 0 2px 5px rgba(58, 123, 237, 0.5);
         }
 
         .stat-title {
             font-size: 1rem;
-            color: var(--dark-color);
+            color: var(--gray-color);
             margin-bottom: 0.5rem;
         }
 
@@ -617,48 +690,57 @@
 
         .stat-card.active-members .stat-value {
             color: var(--success-color);
-            text-shadow: 0 2px 3px rgba(76, 201, 240, 0.2);
         }
 
         .stat-card.expired-members .stat-value {
             color: var(--danger-color);
-            text-shadow: 0 2px 3px rgba(247, 37, 133, 0.2);
         }
 
         .stat-card.profit-card .stat-value {
             color: var(--profit-color);
-            text-shadow: 0 2px 3px rgba(114, 9, 183, 0.2);
+        }
+
+        .stat-card.daily-profit-card .stat-value {
+            color: var(--daily-profit-color);
         }
 
         .stat-change {
             font-size: 0.875rem;
-            color: #6c757d;
+            color: var(--gray-color);
         }
 
         /* Tabs */
         .tabs {
             display: flex;
             margin-bottom: 1.5rem;
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 1px solid #e5e7eb;
+            background-color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            overflow: hidden;
         }
 
         .tab {
-            padding: 0.75rem 1.5rem;
+            padding: 1rem 1.5rem;
             cursor: pointer;
             font-weight: 600;
-            color: #6c757d;
+            color: var(--gray-color);
             border-bottom: 3px solid transparent;
             transition: var(--transition);
             position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .tab:hover {
             color: var(--primary-color);
+            background-color: var(--primary-light);
         }
 
         .tab.active {
             color: var(--primary-color);
             border-bottom-color: var(--primary-color);
+            background-color: var(--primary-light);
         }
 
         .tab::after {
@@ -683,6 +765,7 @@
 
         .tab-content {
             display: none;
+            animation: fadeIn 0.5s ease;
         }
 
         .tab-content.active {
@@ -711,7 +794,6 @@
             align-items: center;
             transform: translateX(150%);
             transition: transform 0.3s ease;
-            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
         }
 
         .toast.show {
@@ -724,12 +806,10 @@
 
         .toast.error {
             background-color: var(--danger-color);
-            box-shadow: 0 5px 15px rgba(247, 37, 133, 0.3);
         }
 
         .toast.warning {
             background-color: var(--warning-color);
-            box-shadow: 0 5px 15px rgba(248, 150, 30, 0.3);
         }
 
         /* Loading Spinner */
@@ -744,67 +824,98 @@
             margin-right: 10px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+            display: inline-block;
         }
 
-        /* Pulse Animation */
-        @keyframes pulse {
-            0% { transform: scale(0.95); opacity: 0.7; }
-            50% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(0.95); opacity: 0.7; }
+        .dropdown-toggle {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        /* Profit Section */
-        .profit-section {
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            min-width: 200px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--light-color);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: #e5e7eb;
+            margin: 0.25rem 0;
+        }
+
+        /* Payments Section */
+        .payments-section {
             background-color: white;
             border-radius: var(--border-radius);
-            padding: 2rem;
+            padding: 1.5rem;
             margin-bottom: 2rem;
             box-shadow: var(--box-shadow);
-            position: relative;
         }
 
-        .profit-section::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, 
-                var(--profit-color), 
-                #9d4edd);
-            box-shadow: 0 2px 5px rgba(114, 9, 183, 0.5);
-        }
-
-        .profit-section h2 {
-            color: var(--profit-color);
-            margin-bottom: 1.5rem;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        .profit-header {
+        .payments-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
-        .profit-table {
+        .payments-title {
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .payments-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .profit-table th,
-        .profit-table td {
-            padding: 1rem;
+        .payments-table th,
+        .payments-table td {
+            padding: 0.75rem;
             text-align: center;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #f3f4f6;
         }
 
-        .profit-table th {
-            background-color: #f8f9fa;
+        .payments-table th {
+            background-color: #f9fafb;
             font-weight: 700;
             color: var(--dark-color);
             position: sticky;
@@ -812,44 +923,60 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
-        .profit-table tr {
-            transition: var(--transition);
+        .payments-table tr:hover {
+            background-color: #f9fafb;
         }
 
-        .profit-table tr:hover {
-            background-color: #f8f9fa;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        /* Animations */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        .profit-amount {
-            font-weight: 700;
-            color: var(--profit-color);
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.7; }
         }
 
-        /* Member Name Border */
-        .member-name {
-            position: relative;
-            padding: 0.5rem;
-            border-radius: 4px;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        .member-name::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border: 1px solid rgba(67, 97, 238, 0.3);
-            border-radius: 4px;
-            pointer-events: none;
-            transition: var(--transition);
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .members-table tr:hover .member-name::after {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 5px rgba(67, 97, 238, 0.3);
+        @keyframes fadeInDown {
+            from { 
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(67, 97, 238, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(67, 97, 238, 0.5); }
+            100% { box-shadow: 0 0 5px rgba(67, 97, 238, 0.3); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .glowing {
+            animation: glow 2s infinite;
         }
 
         /* Responsive Adjustments */
@@ -885,12 +1012,6 @@
             .stats-section {
                 grid-template-columns: 1fr;
             }
-            
-            .profit-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
         }
 
         @media (max-width: 480px) {
@@ -903,7 +1024,7 @@
             }
             
             .container {
-                padding: 0.5rem;
+                padding: 0.75rem;
             }
             
             .tabs {
@@ -912,30 +1033,20 @@
                 padding-bottom: 5px;
             }
             
+            .tab {
+                padding: 0.75rem 1rem;
+                font-size: 0.875rem;
+            }
+            
             .action-buttons {
                 flex-direction: column;
                 align-items: center;
+                gap: 0.25rem;
             }
-        }
-
-        /* Animation */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        @keyframes glow {
-            0% { box-shadow: 0 0 5px rgba(67, 97, 238, 0.3); }
-            50% { box-shadow: 0 0 20px rgba(67, 97, 238, 0.5); }
-            100% { box-shadow: 0 0 5px rgba(67, 97, 238, 0.3); }
-        }
-
-        .glowing {
-            animation: glow 2s infinite;
+            
+            .btn-sm {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -965,15 +1076,37 @@
                 <div class="stat-change">بحاجة إلى تجديد</div>
             </div>
             <div class="stat-card profit-card">
-                <h3 class="stat-title">إجمالي الأرباح الشهرية</h3>
-                <div class="stat-value" id="monthlyProfit">0 E.G</div>
+                <h3 class="stat-title">إجمالي الأرباح</h3>
+                <div class="stat-value" id="totalProfit">0 E.G</div>
                 <div class="stat-change">إجمالي المبالغ المحصلة</div>
+            </div>
+            <div class="stat-card daily-profit-card">
+                <h3 class="stat-title">الأرباح اليومية</h3>
+                <div class="stat-value" id="dailyProfit">0 E.G</div>
+                <div class="stat-change">المبالغ المحصلة اليوم</div>
             </div>
         </div>
 
-        <button id="toggleFormBtn" class="btn">
-            <i class="fas fa-user-plus"></i> إضافة عضو جديد
-        </button>
+        <div class="action-buttons" style="justify-content: flex-start; margin-bottom: 1.5rem;">
+            <button id="toggleFormBtn" class="btn">
+                <i class="fas fa-user-plus"></i> إضافة عضو جديد
+            </button>
+            <button id="addDailyProfitBtn" class="btn btn-daily-profit">
+                <i class="fas fa-plus-circle"></i> إضافة ربح يومي
+            </button>
+            <button id="saveDailyProfitBtn" class="btn btn-success" style="display: none;">
+                <i class="fas fa-save"></i> حفظ الربح اليومي
+            </button>
+            <button id="backupBtn" class="btn btn-info">
+                <i class="fas fa-database"></i> نسخ احتياطي
+            </button>
+            <button id="recalculateBtn" class="btn btn-warning">
+                <i class="fas fa-calculator"></i> إعادة حساب الأموال
+            </button>
+            <button id="clearPaymentsBtn" class="btn btn-danger">
+                <i class="fas fa-trash"></i> حذف جميع الأموال
+            </button>
+        </div>
 
         <!-- نموذج إضافة عضو جديد -->
         <section id="addMemberSection" class="form-section">
@@ -1055,118 +1188,195 @@
                 </div>
             </form>
         </section>
-        
-        <!-- قسم الأرباح الشهرية -->
-        <section class="profit-section fade-in">
-            <div class="profit-header">
-                <h2><i class="fas fa-chart-line"></i> الأرباح الشهرية</h2>
-                <button class="btn btn-danger" id="clearProfitsBtn">
-                    <i class="fas fa-trash"></i> حذف جميع البيانات
-                </button>
-            </div>
-            <div class="table-responsive">
-                <table class="profit-table">
-                    <thead>
-                        <tr>
-                            <th>الشهر</th>
-                            <th>عدد المشتركين الجدد</th>
-                            <th>إجمالي المبالغ</th>
-                            <th>المبالغ المحصلة</th>
-                            <th>المبالغ المتبقية</th>
-                            <th>الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody id="profitList">
-                        <!-- سيتم ملء هذا القسم بالبيانات من Firebase -->
-                    </tbody>
-                </table>
-            </div>
+
+        <!-- نموذج إضافة ربح يومي -->
+        <section id="dailyProfitSection" class="form-section" style="display: none;">
+            <h2><i class="fas fa-coins"></i> إضافة ربح يومي</h2>
+            <form id="dailyProfitForm" class="form-grid">
+                <div class="form-group">
+                    <label for="dailyProfitDate"><i class="fas fa-calendar-day"></i> التاريخ</label>
+                    <input type="date" id="dailyProfitDate" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dailyProfitAmount"><i class="fas fa-money-bill-wave"></i> المبلغ</label>
+                    <input type="number" id="dailyProfitAmount" class="form-control" required min="0" step="any">
+                </div>
+                
+                <div class="form-group">
+                    <label for="dailyProfitSource"><i class="fas fa-tags"></i> المصدر</label>
+                    <input type="text" id="dailyProfitSource" class="form-control" placeholder="مثال: اشتراكات جديدة، تجديدات، إلخ...">
+                </div>
+                
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label for="dailyProfitNotes"><i class="fas fa-sticky-note"></i> ملاحظات (اختياري)</label>
+                    <textarea id="dailyProfitNotes" class="form-control" placeholder="أي ملاحظات إضافية عن الربح اليومي..."></textarea>
+                </div>
+                
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <button type="submit" class="btn btn-daily-profit" id="submitDailyProfitBtn" style="width: 100%;">
+                        <i class="fas fa-save"></i> حفظ الربح اليومي
+                    </button>
+                </div>
+                
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <button type="button" class="btn btn-warning" id="cancelDailyProfitBtn" style="width: 100%;">
+                        <i class="fas fa-times"></i> إلغاء
+                    </button>
+                </div>
+            </form>
         </section>
+        
+        <!-- قسم المدفوعات -->
+        <div class="accordion">
+            <div class="accordion-item">
+                <div class="accordion-header" id="paymentsHeader">
+                    <div class="accordion-title">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>إدارة المدفوعات</span>
+                    </div>
+                    <div class="accordion-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="accordion-content" id="paymentsContent">
+                    <div class="accordion-content-inner">
+                        <div class="payments-section">
+                            <div class="payments-header">
+                                <h3 class="payments-title">
+                                    <i class="fas fa-coins"></i>
+                                    <span>سجل المدفوعات</span>
+                                </h3>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="payments-table">
+                                    <thead>
+                                        <tr>
+                                            <th>اسم العضو</th>
+                                            <th>رقم الهاتف</th>
+                                            <th>التاريخ</th>
+                                            <th>المبلغ</th>
+                                            <th>حالة الدفع</th>
+                                            <th>ملاحظات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="paymentsList">
+                                        <!-- سيتم ملء هذا القسم بالبيانات من Firebase -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <!-- قوائم المشتركين -->
-        <section class="table-section fade-in">
-            <div class="tabs">
-                <div class="tab active" data-tab="all">جميع المشتركين</div>
-                <div class="tab" data-tab="active">المشتركين النشطين</div>
-                <div class="tab" data-tab="expired">الاشتراكات المنتهية</div>
-            </div>
-            
-            <!-- صندوق البحث -->
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="searchInput" class="search-box" placeholder="ابحث عن مشترك بالاسم أو رقم الهاتف...">
-            </div>
-            
-            <div class="tab-content active" id="all-members">
-                <h2><i class="fas fa-users"></i> قائمة جميع المشتركين</h2>
-                <div class="table-responsive">
-                    <table class="members-table">
-                        <thead>
-                            <tr>
-                                <th>اسم العضو</th>
-                                <th>رقم الهاتف</th>
-                                <th>بداية الاشتراك</th>
-                                <th>نهاية الاشتراك</th>
-                                <th>حالة الاشتراك</th>
-                                <th>حالة الدفع</th>
-                                <th>المبلغ المدفوع</th>
-                                <th>المبلغ المتبقي</th>
-                                <th>الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="membersList">
-                            <!-- سيتم ملء هذا القسم بالبيانات من Firebase -->
-                        </tbody>
-                    </table>
+        <div class="accordion">
+            <div class="accordion-item">
+                <div class="accordion-header" id="membersHeader">
+                    <div class="accordion-title">
+                        <i class="fas fa-users"></i>
+                        <span>إدارة المشتركين</span>
+                    </div>
+                    <div class="accordion-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="accordion-content" id="membersContent">
+                    <div class="accordion-content-inner">
+                        <div class="tabs">
+                            <div class="tab active" data-tab="all">
+                                <i class="fas fa-users"></i>
+                                <span>جميع المشتركين</span>
+                            </div>
+                            <div class="tab" data-tab="active">
+                                <i class="fas fa-user-check"></i>
+                                <span>المشتركين النشطين</span>
+                            </div>
+                            <div class="tab" data-tab="expired">
+                                <i class="fas fa-user-clock"></i>
+                                <span>الاشتراكات المنتهية</span>
+                            </div>
+                        </div>
+                        
+                        <!-- صندوق البحث -->
+                        <div class="search-container">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="searchInput" class="search-box" placeholder="ابحث عن مشترك بالاسم أو رقم الهاتف...">
+                        </div>
+                        
+                        <div class="tab-content active" id="all-members">
+                            <div class="table-responsive">
+                                <table class="members-table">
+                                    <thead>
+                                        <tr>
+                                            <th>اسم العضو</th>
+                                            <th>رقم الهاتف</th>
+                                            <th>بداية الاشتراك</th>
+                                            <th>نهاية الاشتراك</th>
+                                            <th>حالة الاشتراك</th>
+                                            <th>حالة الدفع</th>
+                                            <th>المبلغ المدفوع</th>
+                                            <th>المبلغ المتبقي</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="membersList">
+                                        <!-- سيتم ملء هذا القسم بالبيانات من Firebase -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="active-members">
+                            <div class="table-responsive">
+                                <table class="members-table">
+                                    <thead>
+                                        <tr>
+                                            <th>اسم العضو</th>
+                                            <th>رقم الهاتف</th>
+                                            <th>بداية الاشتراك</th>
+                                            <th>نهاية الاشتراك</th>
+                                            <th>حالة الدفع</th>
+                                            <th>المبلغ المدفوع</th>
+                                            <th>المبلغ المتبقي</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="activeMembersList">
+                                        <!-- سيتم ملء هذا القسم بالبيانات من Firebase -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="expired-members">
+                            <div class="table-responsive">
+                                <table class="members-table">
+                                    <thead>
+                                        <tr>
+                                            <th>اسم العضو</th>
+                                            <th>رقم الهاتف</th>
+                                            <th>بداية الاشتراك</th>
+                                            <th>نهاية الاشتراك</th>
+                                            <th>حالة الدفع</th>
+                                            <th>المبلغ المدفوع</th>
+                                            <th>المبلغ المتبقي</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="expiredMembersList">
+                                        <!-- سيتم ملء هذا القسم بالبيانات من Firebase -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="tab-content" id="active-members">
-                <h2><i class="fas fa-user-check"></i> المشتركين النشطين</h2>
-                <div class="table-responsive">
-                    <table class="members-table">
-                        <thead>
-                            <tr>
-                                <th>اسم العضو</th>
-                                <th>رقم الهاتف</th>
-                                <th>بداية الاشتراك</th>
-                                <th>نهاية الاشتراك</th>
-                                <th>حالة الدفع</th>
-                                <th>المبلغ المدفوع</th>
-                                <th>المبلغ المتبقي</th>
-                                <th>الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="activeMembersList">
-                            <!-- سيتم ملء هذا القسم بالبيانات من Firebase -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="tab-content" id="expired-members">
-                <h2><i class="fas fa-user-clock"></i> الاشتراكات المنتهية</h2>
-                <div class="table-responsive">
-                    <table class="members-table">
-                        <thead>
-                            <tr>
-                                <th>اسم العضو</th>
-                                <th>رقم الهاتف</th>
-                                <th>بداية الاشتراك</th>
-                                <th>نهاية الاشتراك</th>
-                                <th>حالة الدفع</th>
-                                <th>المبلغ المدفوع</th>
-                                <th>المبلغ المتبقي</th>
-                                <th>الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="expiredMembersList">
-                            <!-- سيتم ملء هذا القسم بالبيانات من Firebase -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
+        </div>
     </div>
 
     <!-- Toast Notification -->
@@ -1200,7 +1410,9 @@
         // Initialize Realtime Database
         const database = firebase.database();
         const membersRef = database.ref('members');
-        const profitsRef = database.ref('profits');
+        const paymentsRef = database.ref('payments');
+        const dailyProfitsRef = database.ref('dailyProfits');
+        const backupRef = database.ref('backups');
 
         // DOM elements
         const toggleFormBtn = document.getElementById('toggleFormBtn');
@@ -1209,10 +1421,11 @@
         const membersList = document.getElementById('membersList');
         const activeMembersList = document.getElementById('activeMembersList');
         const expiredMembersList = document.getElementById('expiredMembersList');
+        const paymentsList = document.getElementById('paymentsList');
         const activeMembersCount = document.getElementById('activeMembersCount');
         const expiredMembersCount = document.getElementById('expiredMembersCount');
-        const monthlyProfit = document.getElementById('monthlyProfit');
-        const profitList = document.getElementById('profitList');
+        const totalProfit = document.getElementById('totalProfit');
+        const dailyProfitEl = document.getElementById('dailyProfit');
         const subscriptionMonths = document.getElementById('subscriptionMonths');
         const startDateInput = document.getElementById('startDate');
         const endDateInput = document.getElementById('endDate');
@@ -1228,25 +1441,98 @@
         const toastMessage = document.getElementById('toast-message');
         const clubLogo = document.getElementById('clubLogo');
         const searchInput = document.getElementById('searchInput');
-        const clearProfitsBtn = document.getElementById('clearProfitsBtn');
+        const paymentsHeader = document.getElementById('paymentsHeader');
+        const paymentsContent = document.getElementById('paymentsContent');
+        const addDailyProfitBtn = document.getElementById('addDailyProfitBtn');
+        const saveDailyProfitBtn = document.getElementById('saveDailyProfitBtn');
+        const dailyProfitSection = document.getElementById('dailyProfitSection');
+        const dailyProfitForm = document.getElementById('dailyProfitForm');
+        const dailyProfitDate = document.getElementById('dailyProfitDate');
+        const dailyProfitAmount = document.getElementById('dailyProfitAmount');
+        const dailyProfitSource = document.getElementById('dailyProfitSource');
+        const dailyProfitNotes = document.getElementById('dailyProfitNotes');
+        const submitDailyProfitBtn = document.getElementById('submitDailyProfitBtn');
+        const cancelDailyProfitBtn = document.getElementById('cancelDailyProfitBtn');
+        const backupBtn = document.getElementById('backupBtn');
+        const recalculateBtn = document.getElementById('recalculateBtn');
+        const clearPaymentsBtn = document.getElementById('clearPaymentsBtn');
 
-        // متغير لتحديد ما إذا كنا في وضع التعديل
+        // متغيرات التطبيق
         let isEditMode = false;
         let currentMemberId = null;
         let allMembers = [];
-        let monthlyProfits = {};
+        let allPayments = [];
+        let dailyProfits = [];
+        let totalProfitAmount = 0;
+        let dailyProfitTotal = 0;
+        let backupInterval;
+        let profitCheckInterval;
+
+        // Accordion functionality
+        paymentsHeader.addEventListener('click', () => {
+            paymentsHeader.classList.toggle('active');
+            const content = paymentsContent;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+
+        membersHeader.addEventListener('click', () => {
+            membersHeader.classList.toggle('active');
+            const content = membersContent;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+
+        // Open members accordion by default
+        membersHeader.classList.add('active');
+        membersContent.style.maxHeight = membersContent.scrollHeight + "px";
 
         // عرض/إخفاء نموذج الإضافة
         toggleFormBtn.addEventListener('click', function() {
             addMemberSection.classList.toggle('active');
             
-            // تغيير نص الزر حسب حالة النموذج
             if (addMemberSection.classList.contains('active')) {
                 toggleFormBtn.innerHTML = '<i class="fas fa-times"></i> إغلاق النموذج';
+                addMemberSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } else {
                 toggleFormBtn.innerHTML = '<i class="fas fa-user-plus"></i> إضافة عضو جديد';
                 cancelEdit();
             }
+        });
+
+        // عرض/إخفاء نموذج الربح اليومي
+        addDailyProfitBtn.addEventListener('click', function() {
+            dailyProfitSection.style.display = 'block';
+            dailyProfitSection.classList.add('active');
+            addDailyProfitBtn.style.display = 'none';
+            saveDailyProfitBtn.style.display = 'inline-flex';
+            
+            // تعيين تاريخ اليوم كقيمة افتراضية
+            const today = new Date().toISOString().split('T')[0];
+            dailyProfitDate.value = today;
+            
+            dailyProfitSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        saveDailyProfitBtn.addEventListener('click', function() {
+            dailyProfitSection.style.display = 'none';
+            dailyProfitSection.classList.remove('active');
+            addDailyProfitBtn.style.display = 'inline-flex';
+            saveDailyProfitBtn.style.display = 'none';
+        });
+
+        cancelDailyProfitBtn.addEventListener('click', function() {
+            dailyProfitSection.style.display = 'none';
+            dailyProfitSection.classList.remove('active');
+            addDailyProfitBtn.style.display = 'inline-flex';
+            saveDailyProfitBtn.style.display = 'none';
+            dailyProfitForm.reset();
         });
 
         // حساب تاريخ نهاية الاشتراك عند تغيير تاريخ البدء أو عدد الأشهر
@@ -1281,7 +1567,6 @@
             toastMessage.textContent = message;
             toast.className = 'toast show';
             
-            // تغيير لون الـ Toast حسب النوع
             if (type === 'error') {
                 toast.classList.add('error');
             } else if (type === 'warning') {
@@ -1290,7 +1575,6 @@
                 toast.classList.remove('error', 'warning');
             }
             
-            // إخفاء الـ Toast بعد 3 ثواني
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
@@ -1300,7 +1584,6 @@
         memberForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // التحقق من صحة البيانات
             const name = document.getElementById('memberName').value.trim();
             const phone = document.getElementById('phoneNumber').value.trim();
             const startDate = startDateInput.value;
@@ -1332,12 +1615,10 @@
                 updatedAt: firebase.database.ServerValue.TIMESTAMP
             };
             
-            // عرض مؤشر التحميل
             submitBtn.innerHTML = '<div class="spinner"></div> جاري الحفظ...';
             submitBtn.disabled = true;
             
             if (isEditMode) {
-                // تحديث العضو الموجود في Firebase
                 membersRef.child(currentMemberId).update(memberData)
                     .then(() => {
                         showToast('تم تعديل بيانات العضو بنجاح');
@@ -1351,17 +1632,22 @@
                         submitBtn.disabled = false;
                     });
             } else {
-                // إضافة عضو جديد إلى Firebase
                 membersRef.push({
                     ...memberData,
                     createdAt: firebase.database.ServerValue.TIMESTAMP
                 })
-                .then(() => {
+                .then((ref) => {
                     showToast('تم إضافة العضو الجديد بنجاح');
                     resetForm();
                     
-                    // تحديث إحصائيات الأرباح الشهرية
-                    updateMonthlyProfit(startDate, subscriptionFee, amountPaid);
+                    if (amountPaid > 0) {
+                        recordPayment(ref.key, name, phone, amountPaid, 'دفعة اشتراك جديدة', notes);
+                    }
+                    
+                    // تحديث الربح اليومي عند إضافة عضو جديد مع دفعة
+                    if (amountPaid > 0) {
+                        updateDailyProfit(amountPaid, 'اشتراك جديد: ' + name);
+                    }
                 })
                 .catch(error => {
                     showToast('حدث خطأ أثناء إضافة العضو: ' + error.message, 'error');
@@ -1373,53 +1659,129 @@
             }
         });
 
-        // تحديث إحصائيات الأرباح الشهرية
-        function updateMonthlyProfit(startDate, subscriptionFee, amountPaid) {
-            const date = new Date(startDate);
-            const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        // إضافة ربح يومي
+        dailyProfitForm.addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            profitsRef.child(monthYear).transaction(currentData => {
-                if (currentData) {
-                    return {
-                        totalSubscriptions: currentData.totalSubscriptions + 1,
-                        totalAmount: currentData.totalAmount + subscriptionFee,
-                        collectedAmount: currentData.collectedAmount + amountPaid,
-                        remainingAmount: currentData.remainingAmount + (subscriptionFee - amountPaid),
-                        lastUpdated: firebase.database.ServerValue.TIMESTAMP
-                    };
-                } else {
-                    return {
-                        totalSubscriptions: 1,
-                        totalAmount: subscriptionFee,
-                        collectedAmount: amountPaid,
-                        remainingAmount: subscriptionFee - amountPaid,
-                        lastUpdated: firebase.database.ServerValue.TIMESTAMP
-                    };
-                }
-            });
+            const date = dailyProfitDate.value;
+            const amount = parseFloat(dailyProfitAmount.value);
+            const source = dailyProfitSource.value.trim() || 'غير محدد';
+            const notes = dailyProfitNotes.value.trim();
+            
+            if (!date || isNaN(amount) || amount <= 0) {
+                showToast('الرجاء إدخال تاريخ ومبلغ صحيح', 'error');
+                return;
+            }
+            
+            submitDailyProfitBtn.innerHTML = '<div class="spinner"></div> جاري الحفظ...';
+            submitDailyProfitBtn.disabled = true;
+            
+            const profitData = {
+                date: date,
+                amount: amount,
+                source: source,
+                notes: notes,
+                createdAt: firebase.database.ServerValue.TIMESTAMP
+            };
+            
+            dailyProfitsRef.push(profitData)
+                .then(() => {
+                    showToast('تم إضافة الربح اليومي بنجاح');
+                    dailyProfitForm.reset();
+                    
+                    // تعيين تاريخ اليوم كقيمة افتراضية
+                    const today = new Date().toISOString().split('T')[0];
+                    dailyProfitDate.value = today;
+                    
+                    // تحديث الربح اليومي
+                    updateDailyProfit(amount, source);
+                })
+                .catch(error => {
+                    showToast('حدث خطأ أثناء إضافة الربح اليومي: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    submitDailyProfitBtn.innerHTML = '<i class="fas fa-save"></i> حفظ الربح اليومي';
+                    submitDailyProfitBtn.disabled = false;
+                });
+        });
+
+        // تسجيل المدفوعات
+        function recordPayment(memberId, memberName, phone, amount, source, notes) {
+            const paymentData = {
+                memberId: memberId,
+                memberName: memberName,
+                phone: phone,
+                amount: amount,
+                source: source,
+                notes: notes || 'لا توجد ملاحظات',
+                date: new Date().toISOString().split('T')[0],
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            };
+            
+            paymentsRef.push(paymentData)
+                .then(() => {
+                    // تحديث إجمالي الأرباح
+                    totalProfitAmount += amount;
+                    totalProfit.textContent = `${totalProfitAmount} E.G`;
+                })
+                .catch(error => {
+                    console.error('Error recording payment:', error);
+                });
         }
 
-        // حذف جميع بيانات الأرباح
-        clearProfitsBtn.addEventListener('click', function() {
-            if (confirm('هل أنت متأكد من حذف جميع بيانات الأرباح الشهرية؟ لا يمكن التراجع عن هذه العملية.')) {
-                clearProfitsBtn.innerHTML = '<div class="spinner"></div> جاري الحذف...';
-                clearProfitsBtn.disabled = true;
-                
-                profitsRef.remove()
-                    .then(() => {
-                        showToast('تم حذف جميع بيانات الأرباح الشهرية بنجاح');
-                        monthlyProfits = {};
-                        renderMonthlyProfits();
-                    })
-                    .catch(error => {
-                        showToast('حدث خطأ أثناء حذف بيانات الأرباح: ' + error.message, 'error');
-                    })
-                    .finally(() => {
-                        clearProfitsBtn.innerHTML = '<i class="fas fa-trash"></i> حذف جميع البيانات';
-                        clearProfitsBtn.disabled = false;
-                    });
-            }
-        });
+        // تحديث الربح اليومي
+        function updateDailyProfit(amount, source) {
+            const today = new Date().toISOString().split('T')[0];
+            
+            dailyProfitTotal += amount;
+            dailyProfitEl.textContent = `${dailyProfitTotal} E.G`;
+            
+            // تحديث إجمالي الأرباح
+            totalProfitAmount += amount;
+            totalProfit.textContent = `${totalProfitAmount} E.G`;
+        }
+
+        // حساب الربح اليومي من البيانات
+        function calculateDailyProfit() {
+            const today = new Date().toISOString().split('T')[0];
+            let todayProfit = 0;
+            
+            // حساب الأرباح من المدفوعات اليومية
+            dailyProfits.forEach(profit => {
+                if (profit.date === today) {
+                    todayProfit += profit.amount;
+                }
+            });
+            
+            // حساب الأرباح من المشتركين الجدد اليوم
+            allMembers.forEach(member => {
+                const memberDate = new Date(member.startDate).toISOString().split('T')[0];
+                if (memberDate === today && member.amountPaid > 0) {
+                    todayProfit += member.amountPaid;
+                }
+            });
+            
+            dailyProfitTotal = todayProfit;
+            dailyProfitEl.textContent = `${dailyProfitTotal} E.G`;
+        }
+
+        // حساب إجمالي الأرباح من البيانات
+        function calculateTotalProfit() {
+            let total = 0;
+            
+            // حساب من المدفوعات
+            allPayments.forEach(payment => {
+                total += payment.amount;
+            });
+            
+            // حساب من الأرباح اليومية
+            dailyProfits.forEach(profit => {
+                total += profit.amount;
+            });
+            
+            totalProfitAmount = total;
+            totalProfit.textContent = `${totalProfitAmount} E.G`;
+        }
 
         // إلغاء التعديل
         cancelEditBtn.addEventListener('click', cancelEdit);
@@ -1438,14 +1800,10 @@
             memberForm.reset();
             memberIdInput.value = '';
             
-            // تعيين تاريخ اليوم كقيمة افتراضية لتاريخ البدء
             const today = new Date().toISOString().split('T')[0];
             startDateInput.value = today;
             
-            // تعيين حالة الدفع إلى "مسدد" كقيمة افتراضية
             document.getElementById('paymentStatus').value = 'paid';
-            
-            // حساب تاريخ نهاية الاشتراك
             calculateEndDate();
         }
 
@@ -1456,12 +1814,10 @@
                     const member = snapshot.val();
                     if (!member) return;
                     
-                    // تعبئة النموذج ببيانات العضو
                     memberIdInput.value = memberId;
                     document.getElementById('memberName').value = member.name;
                     document.getElementById('phoneNumber').value = member.phone;
                     
-                    // حساب عدد أشهر الاشتراك
                     const startDate = new Date(member.startDate);
                     const endDate = new Date(member.endDate);
                     const monthsDiff = (endDate.getFullYear() - startDate.getFullYear()) * 12 + 
@@ -1475,19 +1831,16 @@
                     document.getElementById('paymentStatus').value = member.paymentStatus;
                     document.getElementById('notes').value = member.notes || '';
                     
-                    // تغيير إلى وضع التعديل
                     isEditMode = true;
                     currentMemberId = memberId;
                     submitBtn.innerHTML = '<i class="fas fa-save"></i> حفظ التعديلات';
                     cancelEditDiv.style.display = 'block';
                     
-                    // فتح النموذج إذا كان مغلقاً
                     if (!addMemberSection.classList.contains('active')) {
                         addMemberSection.classList.add('active');
                         toggleFormBtn.innerHTML = '<i class="fas fa-times"></i> إغلاق النموذج';
                     }
                     
-                    // التمرير إلى النموذج
                     addMemberSection.scrollIntoView({ behavior: 'smooth' });
                 })
                 .catch(error => {
@@ -1502,7 +1855,6 @@
                     .then(() => {
                         showToast('تم حذف العضو بنجاح');
                         
-                        // إذا كنا في وضع التعديل للعضو المحذوف، نخرج من وضع التعديل
                         if (isEditMode && currentMemberId === memberId) {
                             cancelEdit();
                         }
@@ -1523,13 +1875,10 @@
                     const endDate = new Date(member.endDate);
                     const today = new Date();
                     
-                    // إذا كان الاشتراك منتهيًا، نبدأ التجديد من اليوم
-                    // وإلا نضيف شهرًا إلى تاريخ الانتهاء الحالي
                     const newEndDate = endDate < today 
                         ? new Date(today.setMonth(today.getMonth() + 1))
                         : new Date(endDate.setMonth(endDate.getMonth() + 1));
                     
-                    // إعادة حساب المبلغ المتبقي
                     const remainingAmount = member.subscriptionFee - member.amountPaid;
                     
                     const updateData = {
@@ -1558,11 +1907,9 @@
             tab.addEventListener('click', function() {
                 const tabId = this.dataset.tab;
                 
-                // تحديث التبويب النشط
                 tabs.forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
                 
-                // تحديث المحتوى المعروض
                 tabContents.forEach(content => content.classList.remove('active'));
                 document.getElementById(`${tabId}-members`).classList.add('active');
             });
@@ -1577,19 +1924,11 @@
             return date.toLocaleDateString('ar-EG', options);
         }
 
-        // تنسيق اسم الشهر
-        function formatMonthYear(monthYear) {
-            const [year, month] = monthYear.split('-');
-            const date = new Date(year, month - 1);
-            return date.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long' });
-        }
-
         // البحث عن المشتركين
         function searchMembers(query) {
             const normalizedQuery = query.toLowerCase().trim();
             
             if (!normalizedQuery) {
-                // إذا كان صندوق البحث فارغاً، عرض جميع المشتركين
                 renderMembers(allMembers);
                 return;
             }
@@ -1633,7 +1972,6 @@
                 if (isActive) activeCount++;
                 else expiredCount++;
                 
-                // قائمة جميع المشتركين
                 const row = document.createElement('tr');
                 row.className = isActive ? 'active-member' : 'expired-member';
                 row.innerHTML = `
@@ -1673,17 +2011,8 @@
                     </td>
                 `;
                 
-                // إضافة حلقة دائرية حول المشترك
-                const circle = document.createElement('div');
-                circle.className = 'member-circle';
-                row.appendChild(circle);
-                
-                // إضافة فاصل مضيء
-                row.classList.add('member-separator');
-                
                 membersList.appendChild(row);
                 
-                // قائمة المشتركين النشطين
                 if (isActive) {
                     const activeRow = document.createElement('tr');
                     activeRow.className = 'active-member';
@@ -1715,18 +2044,8 @@
                         </td>
                     `;
                     
-                    // إضافة حلقة دائرية حول المشترك
-                    const activeCircle = document.createElement('div');
-                    activeCircle.className = 'member-circle';
-                    activeRow.appendChild(activeCircle);
-                    
-                    // إضافة فاصل مضيء
-                    activeRow.classList.add('member-separator');
-                    
                     activeMembersList.appendChild(activeRow);
                 }
-                
-                // قائمة المشتركين المنتهية اشتراكاتهم
                 else {
                     const expiredRow = document.createElement('tr');
                     expiredRow.className = 'expired-member';
@@ -1761,24 +2080,35 @@
                         </td>
                     `;
                     
-                    // إضافة حلقة دائرية حول المشترك
-                    const expiredCircle = document.createElement('div');
-                    expiredCircle.className = 'member-circle';
-                    expiredRow.appendChild(expiredCircle);
-                    
-                    // إضافة فاصل مضيء
-                    expiredRow.classList.add('member-separator');
-                    
                     expiredMembersList.appendChild(expiredRow);
                 }
             });
             
-            // تحديث الإحصائيات
             activeMembersCount.textContent = activeCount;
             expiredMembersCount.textContent = expiredCount;
+        }
+
+        // عرض المدفوعات
+        function renderPayments() {
+            paymentsList.innerHTML = '';
             
-            // حساب إجمالي الأرباح الشهرية
-            calculateMonthlyProfit();
+            allPayments.forEach(payment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${payment.memberName}</td>
+                    <td>${payment.phone}</td>
+                    <td>${formatDate(payment.date)}</td>
+                    <td class="amount">${payment.amount} E.G</td>
+                    <td>
+                        <span class="status status-paid">
+                            مسدد
+                            <i class="fas fa-check-circle status-icon"></i>
+                        </span>
+                    </td>
+                    <td>${payment.notes}</td>
+                `;
+                paymentsList.appendChild(row);
+            });
         }
 
         // عرض ملاحظات المشترك
@@ -1789,72 +2119,76 @@
             alert(`ملاحظات عن المشترك ${member.name}:\n\n${member.notes}`);
         }
 
-        // عرض الأرباح الشهرية
-        function renderMonthlyProfits() {
-            profitList.innerHTML = '';
-            
-            // فرز الأشهر من الأحدث إلى الأقدم
-            const sortedMonths = Object.keys(monthlyProfits).sort().reverse();
-            
-            sortedMonths.forEach(monthYear => {
-                const profit = monthlyProfits[monthYear];
-                const row = document.createElement('tr');
-                
-                row.innerHTML = `
-                    <td>${formatMonthYear(monthYear)}</td>
-                    <td>${profit.totalSubscriptions}</td>
-                    <td class="profit-amount">${profit.totalAmount} E.G</td>
-                    <td class="profit-amount">${profit.collectedAmount} E.G</td>
-                    <td class="profit-amount">${profit.remainingAmount} E.G</td>
-                    <td>
-                        <button class="btn btn-sm btn-profit" onclick="viewMonthDetails('${monthYear}')" title="عرض التفاصيل">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </td>
-                `;
-                
-                profitList.appendChild(row);
-            });
-            
-            // حساب إجمالي الأرباح الشهرية
-            calculateMonthlyProfit();
-        }
-
-        // عرض تفاصيل شهر معين
-        function viewMonthDetails(monthYear) {
-            const [year, month] = monthYear.split('-');
-            const startDate = new Date(year, month - 1, 1);
-            const endDate = new Date(year, month, 0);
-            
-            const monthMembers = allMembers.filter(member => {
-                const memberDate = new Date(member.startDate);
-                return memberDate >= startDate && memberDate <= endDate;
-            });
-            
-            let message = `تفاصيل شهر ${formatMonthYear(monthYear)}:\n\n`;
-            message += `عدد المشتركين: ${monthMembers.length}\n`;
-            message += `إجمالي المبالغ: ${monthlyProfits[monthYear].totalAmount} E.G\n`;
-            message += `المبالغ المحصلة: ${monthlyProfits[monthYear].collectedAmount} E.G\n`;
-            message += `المبالغ المتبقية: ${monthlyProfits[monthYear].remainingAmount} E.G\n\n`;
-            message += `قائمة المشتركين:\n`;
-            
-            monthMembers.forEach((member, index) => {
-                message += `${index + 1}. ${member.name} - ${member.amountPaid} E.G (${member.paymentStatus === 'paid' ? 'مسدد' : 'غير مسدد'})\n`;
-            });
-            
-            alert(message);
-        }
-
-        // حساب إجمالي الأرباح الشهرية
-        function calculateMonthlyProfit() {
-            const currentMonthYear = new Date().toISOString().slice(0, 7);
-            const currentMonthProfit = monthlyProfits[currentMonthYear] || {
-                totalAmount: 0,
-                collectedAmount: 0,
-                remainingAmount: 0
+        // إنشاء نسخة احتياطية
+        function createBackup() {
+            const today = new Date();
+            const backupDate = today.toISOString();
+            const backupData = {
+                members: allMembers,
+                payments: allPayments,
+                dailyProfits: dailyProfits,
+                createdAt: backupDate
             };
             
-            monthlyProfit.textContent = `${currentMonthProfit.collectedAmount} E.G`;
+            // حفظ نسخة في localStorage
+            localStorage.setItem('gymMembersBackup', JSON.stringify(backupData));
+            
+            // حفظ نسخة في Firebase
+            backupRef.push(backupData)
+                .then(() => {
+                    showToast('تم إنشاء نسخة احتياطية بنجاح');
+                })
+                .catch(error => {
+                    showToast('حدث خطأ أثناء إنشاء النسخة الاحتياطية: ' + error.message, 'error');
+                });
+        }
+
+        // استعادة النسخة الاحتياطية من localStorage
+        function restoreFromLocalBackup() {
+            const backup = localStorage.getItem('gymMembersBackup');
+            if (!backup) return;
+            
+            try {
+                const backupData = JSON.parse(backup);
+                allMembers = backupData.members || [];
+                allPayments = backupData.payments || [];
+                dailyProfits = backupData.dailyProfits || [];
+                
+                renderMembers(allMembers);
+                renderPayments();
+                calculateTotalProfit();
+                calculateDailyProfit();
+                
+                showToast('تم تحميل النسخة الاحتياطية المحلية');
+            } catch (error) {
+                console.error('Error restoring from local backup:', error);
+            }
+        }
+
+        // إعادة حساب جميع الأموال
+        function recalculateAllPayments() {
+            if (confirm('هل تريد إعادة حساب جميع الأموال المحصلة؟ سيتم تحديث الإحصائيات بناءً على البيانات الحالية.')) {
+                calculateTotalProfit();
+                calculateDailyProfit();
+                showToast('تم إعادة حساب جميع الأموال بنجاح');
+            }
+        }
+
+        // حذف جميع سجلات المدفوعات
+        function clearAllPayments() {
+            if (confirm('هل أنت متأكد من حذف جميع سجلات المدفوعات؟ لا يمكن التراجع عن هذه العملية.')) {
+                paymentsRef.remove()
+                    .then(() => {
+                        allPayments = [];
+                        totalProfitAmount = 0;
+                        totalProfit.textContent = '0 E.G';
+                        renderPayments();
+                        showToast('تم حذف جميع سجلات المدفوعات بنجاح');
+                    })
+                    .catch(error => {
+                        showToast('حدث خطأ أثناء حذف سجلات المدفوعات: ' + error.message, 'error');
+                    });
+            }
         }
 
         // تحديث قوائم المشتركين عند تغيير البيانات في Firebase
@@ -1870,10 +2204,32 @@
             renderMembers(allMembers);
         });
 
-        // تحديث إحصائيات الأرباح الشهرية
-        profitsRef.on('value', function(snapshot) {
-            monthlyProfits = snapshot.val() || {};
-            renderMonthlyProfits();
+        // تحديث المدفوعات عند تغيير البيانات في Firebase
+        paymentsRef.on('value', function(snapshot) {
+            allPayments = [];
+            
+            snapshot.forEach(childSnapshot => {
+                const payment = childSnapshot.val();
+                payment.id = childSnapshot.key;
+                allPayments.push(payment);
+            });
+            
+            renderPayments();
+            calculateTotalProfit();
+        });
+
+        // تحديث الأرباح اليومية
+        dailyProfitsRef.on('value', function(snapshot) {
+            dailyProfits = [];
+            
+            snapshot.forEach(childSnapshot => {
+                const profit = childSnapshot.val();
+                profit.id = childSnapshot.key;
+                dailyProfits.push(profit);
+            });
+            
+            calculateDailyProfit();
+            calculateTotalProfit();
         });
 
         // البحث عند كتابة نص في صندوق البحث
@@ -1881,21 +2237,44 @@
             searchMembers(this.value);
         });
 
+        // إنشاء نسخة احتياطية عند النقر على الزر
+        backupBtn.addEventListener('click', createBackup);
+
+        // إعادة حساب الأموال
+        recalculateBtn.addEventListener('click', recalculateAllPayments);
+
+        // حذف جميع المدفوعات
+        clearPaymentsBtn.addEventListener('click', clearAllPayments);
+
         // التحميل الأولي للصفحة
         document.addEventListener('DOMContentLoaded', function() {
             resetForm();
             
-            // تعيين تاريخ اليوم كقيمة افتراضية
             const today = new Date().toISOString().split('T')[0];
             startDateInput.value = today;
+            dailyProfitDate.value = today;
             calculateEndDate();
+            
+            // استعادة النسخة الاحتياطية من localStorage إذا وجدت
+            restoreFromLocalBackup();
+            
+            // إنشاء نسخة احتياطية كل ساعة
+            backupInterval = setInterval(createBackup, 60 * 60 * 1000);
+            
+            // مراجعة الربح اليومي كل دقيقة
+            profitCheckInterval = setInterval(calculateDailyProfit, 60 * 1000);
             
             // جعل الدوال متاحة للاستدعاء من الأحداث المضمنة في HTML
             window.editMember = editMember;
             window.deleteMember = deleteMember;
             window.renewSubscription = renewSubscription;
             window.showNotes = showNotes;
-            window.viewMonthDetails = viewMonthDetails;
+        });
+
+        // تنظيف الفواصل الزمنية عند إغلاق الصفحة
+        window.addEventListener('beforeunload', function() {
+            clearInterval(backupInterval);
+            clearInterval(profitCheckInterval);
         });
     </script>
 </body>
