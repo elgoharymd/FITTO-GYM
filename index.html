@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FITTO GYM</title>
+    <title>FITTO GYM - نظام الإدارة</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
     <style>
         :root {
             --primary-color: #4361ee;
@@ -30,6 +34,13 @@
             --profit-light: #ede9fe;
             --daily-profit-color: #3a7bed;
             --daily-profit-light: #e9f4fe;
+            --neon-blue: #00f2ff;
+            --neon-pink: #ff00ff;
+            --neon-green: #00ff9d;
+            --glass-effect: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            --sidebar-width: 280px;
         }
 
         * {
@@ -40,16 +51,19 @@
 
         body {
             font-family: 'Tajawal', sans-serif;
-            background-color: #f5f7fa;
+            background: linear-gradient(135deg, #f5f7fa, #e4e8f0);
             color: var(--dark-color);
             line-height: 1.6;
             scroll-behavior: smooth;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 1.5rem;
+            transition: var(--transition);
         }
 
         /* Header Styles */
@@ -64,6 +78,9 @@
             position: relative;
             overflow: hidden;
             animation: fadeInDown 0.8s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.9), rgba(63, 55, 201, 0.9));
         }
 
         .header::before {
@@ -160,6 +177,8 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .btn:hover {
@@ -305,6 +324,9 @@
             max-height: 0;
             overflow: hidden;
             position: relative;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--glass-border);
         }
 
         .form-section.active {
@@ -388,10 +410,23 @@
             resize: vertical;
         }
 
-        /* Search Box */
+        /* Search Box - Improved */
         .search-container {
             margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            background: white;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .search-box-container {
+            flex: 1;
             position: relative;
+            min-width: 200px;
         }
 
         .search-box {
@@ -418,6 +453,30 @@
             right: 1rem;
             transform: translateY(-50%);
             color: var(--gray-color);
+        }
+
+        .search-type-toggle {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            background-color: var(--light-color);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .search-type-toggle:hover {
+            background-color: #e5e7eb;
+        }
+
+        .search-type-toggle.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
 
         /* Accordion Styles */
@@ -490,6 +549,9 @@
             margin-bottom: 2rem;
             position: relative;
             animation: fadeIn 0.6s ease;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--glass-border);
         }
 
         .table-section::before {
@@ -622,6 +684,9 @@
             position: relative;
             overflow: hidden;
             transition: var(--transition);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--glass-border);
         }
 
         .stat-card:hover {
@@ -717,6 +782,7 @@
             background-color: white;
             border-radius: var(--border-radius) var(--border-radius) 0 0;
             overflow: hidden;
+            flex-wrap: wrap;
         }
 
         .tab {
@@ -777,6 +843,7 @@
             display: flex;
             gap: 0.5rem;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         /* Toast Notification */
@@ -794,6 +861,8 @@
             align-items: center;
             transform: translateX(150%);
             transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .toast.show {
@@ -850,6 +919,9 @@
             visibility: hidden;
             transform: translateY(10px);
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--glass-border);
         }
 
         .dropdown-menu.show {
@@ -884,6 +956,9 @@
             padding: 1.5rem;
             margin-bottom: 2rem;
             box-shadow: var(--box-shadow);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--glass-border);
         }
 
         .payments-header {
@@ -891,6 +966,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .payments-title {
@@ -925,6 +1002,368 @@
 
         .payments-table tr:hover {
             background-color: #f9fafb;
+        }
+
+        /* Member Card Styles */
+        .member-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid #e5e7eb;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--glass-border);
+        }
+
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .member-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--primary-color);
+            box-shadow: 0 2px 5px rgba(67, 97, 238, 0.5);
+        }
+
+        .member-card.active::before {
+            background: var(--success-color);
+        }
+
+        .member-card.expired::before {
+            background: var(--danger-color);
+        }
+
+        .member-card .member-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .member-card .member-info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .member-card .member-info-label {
+            font-size: 0.875rem;
+            color: var(--gray-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .member-card .member-info-value {
+            font-weight: 600;
+        }
+
+        .member-card .member-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Neon Glow Effects */
+        .neon-border {
+            position: relative;
+            z-index: 1;
+        }
+
+        .neon-border::after {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: var(--border-radius);
+            background: linear-gradient(45deg, 
+                var(--neon-blue), 
+                var(--neon-pink), 
+                var(--neon-green));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .neon-border:hover::after {
+            opacity: 0.7;
+            animation: neonGlow 1.5s infinite alternate;
+        }
+
+        /* Main Menu */
+        .main-menu {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .main-menu-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-menu-btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary-color);
+            transform: scaleX(0);
+            transition: var(--transition);
+        }
+
+        .main-menu-btn:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* Financial Reports Section */
+        .financial-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+            display: none;
+            opacity: 0;
+            max-height: 0;
+            transition: all 0.5s ease;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--glass-border);
+        }
+
+        .financial-section.active {
+            display: block;
+            max-height: 2000px;
+            opacity: 1;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .financial-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, 
+                var(--profit-color), 
+                var(--daily-profit-color));
+            box-shadow: 0 2px 5px rgba(124, 58, 237, 0.5);
+        }
+
+        .financial-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .financial-title {
+            color: var(--profit-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .financial-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .financial-stat {
+            background-color: var(--light-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--glass-border);
+        }
+
+        .financial-stat-title {
+            font-size: 1rem;
+            color: var(--gray-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .financial-stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--profit-color);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 2rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--glass-border);
+        }
+
+        .chart-title {
+            text-align: center;
+            color: var(--profit-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .financial-details {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .financial-table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            max-height: 500px;
+            overflow-y: auto;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--glass-border);
+        }
+
+        .financial-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .financial-table th,
+        .financial-table td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .financial-table th {
+            background-color: #f9fafb;
+            font-weight: 700;
+            color: var(--dark-color);
+            position: sticky;
+            top: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .financial-table tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .day-profit {
+            font-weight: 600;
+            color: var(--success-color);
+        }
+
+        .day-members {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* Stats Toggle Button */
+        .toggle-stats-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 999;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .toggle-stats-btn:hover {
+            transform: scale(1.1);
+            background-color: var(--secondary-color);
+        }
+
+        /* Hidden Stats Section */
+        .hidden-stats {
+            display: none;
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--box-shadow);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--glass-border);
+        }
+
+        .hidden-stats.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Member ID */
+        .member-id {
+            font-size: 0.75rem;
+            color: var(--gray-color);
+            margin-top: 0.25rem;
+        }
+
+        /* Real-time update indicator */
+        .update-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .update-indicator.show {
+            opacity: 1;
+        }
+
+        .update-indicator i {
+            animation: spin 1s linear infinite;
         }
 
         /* Animations */
@@ -971,6 +1410,21 @@
             100% { box-shadow: 0 0 5px rgba(67, 97, 238, 0.3); }
         }
 
+        @keyframes neonGlow {
+            from {
+                filter: blur(2px) brightness(1);
+            }
+            to {
+                filter: blur(4px) brightness(1.2);
+            }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
         .fade-in {
             animation: fadeIn 0.5s ease forwards;
         }
@@ -979,10 +1433,42 @@
             animation: glow 2s infinite;
         }
 
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
         /* Responsive Adjustments */
-        @media (max-width: 768px) {
+        @media (max-width: 1200px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header {
+                padding: 1.5rem;
+            }
+            
+            .club-name {
+                font-size: 1.6rem;
+            }
+            
             .header h1 {
                 font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .stats-section, .financial-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
             }
             
             .club-name {
@@ -1009,18 +1495,24 @@
                 font-size: 0.875rem;
             }
             
-            .stats-section {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .form-grid {
+            .stats-section, .financial-stats {
                 grid-template-columns: 1fr;
             }
             
-            .header {
-                padding: 1rem;
+            .chart-container {
+                height: 300px;
+            }
+            
+            .financial-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .form-grid {
+                grid-template-columns: 1fr;
             }
             
             .container {
@@ -1047,6 +1539,40 @@
             .btn-sm {
                 width: 100%;
             }
+            
+            .main-menu {
+                flex-direction: column;
+            }
+            
+            .dropdown-menu {
+                min-width: 100%;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .financial-section, .financial-section * {
+                visibility: visible;
+            }
+            
+            .financial-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: auto;
+                box-shadow: none;
+                border: none;
+                background: white;
+            }
+            
+            .btn, .toggle-stats-btn, .search-container, .tabs {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -1063,50 +1589,164 @@
             <p>إدارة كاملة لأعضاء النادي وتتبع الاشتراكات والأرباح</p>
         </header>
 
-        <!-- إحصائيات المشتركين -->
-        <div class="stats-section">
-            <div class="stat-card active-members">
-                <h3 class="stat-title">المشتركين النشطين</h3>
-                <div class="stat-value" id="activeMembersCount">0</div>
-                <div class="stat-change">اشتراكات سارية المفعول</div>
+        <!-- مؤشر التحديث التلقائي -->
+        <div id="updateIndicator" class="update-indicator">
+            <i class="fas fa-sync-alt"></i>
+            <span>جاري تحديث البيانات...</span>
+        </div>
+
+        <!-- القائمة الرئيسية -->
+        <div class="main-menu">
+            <button id="toggleFormBtn" class="btn main-menu-btn">
+                <i class="fas fa-user-plus"></i> إضافة عضو جديد
+            </button>
+            
+            <div class="dropdown">
+                <button class="btn btn-daily-profit dropdown-toggle main-menu-btn" id="profitsDropdown">
+                    <i class="fas fa-coins"></i> إدارة الأرباح <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-menu" id="profitsMenu">
+                    <div class="dropdown-item" id="addDailyProfitBtn">
+                        <i class="fas fa-plus-circle"></i> إضافة ربح يومي
+                    </div>
+                    <div class="dropdown-item" id="viewDailyProfitsBtn">
+                        <i class="fas fa-list"></i> عرض الأرباح اليومية
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" id="recalculateBtn">
+                        <i class="fas fa-calculator"></i> إعادة حساب الأموال
+                    </div>
+                    <div class="dropdown-item" id="clearPaymentsBtn">
+                        <i class="fas fa-trash"></i> حذف جميع الأموال
+                    </div>
+                </div>
             </div>
-            <div class="stat-card expired-members">
-                <h3 class="stat-title">المشتركين المنتهية اشتراكاتهم</h3>
-                <div class="stat-value" id="expiredMembersCount">0</div>
-                <div class="stat-change">بحاجة إلى تجديد</div>
+            
+            <div class="dropdown">
+                <button class="btn btn-info dropdown-toggle main-menu-btn" id="systemDropdown">
+                    <i class="fas fa-cog"></i> إعدادات النظام <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-menu" id="systemMenu">
+                    <div class="dropdown-item" id="backupBtn">
+                        <i class="fas fa-database"></i> نسخ احتياطي
+                    </div>
+                    <div class="dropdown-item" id="restoreBtn">
+                        <i class="fas fa-undo"></i> استعادة نسخة
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" id="settingsBtn">
+                        <i class="fas fa-sliders-h"></i> الإعدادات
+                    </div>
+                    <div class="dropdown-item" id="telegramSetupBtn">
+                        <i class="fab fa-telegram"></i> إعدادات التليجرام
+                    </div>
+                </div>
             </div>
-            <div class="stat-card profit-card">
-                <h3 class="stat-title">إجمالي الأرباح</h3>
-                <div class="stat-value" id="totalProfit">0 E.G</div>
-                <div class="stat-change">إجمالي المبالغ المحصلة</div>
+            
+            <button id="toggleFinancialBtn" class="btn btn-profit main-menu-btn">
+                <i class="fas fa-chart-line"></i> التقارير المالية
+            </button>
+        </div>
+
+        <!-- قسم التقارير المالية -->
+        <section id="financialSection" class="financial-section">
+            <div class="financial-header">
+                <h2 class="financial-title">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>التقارير المالية الشهرية</span>
+                </h2>
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-outline" id="printFinancialBtn">
+                        <i class="fas fa-print"></i> طباعة التقرير
+                    </button>
+                    <button class="btn btn-sm btn-outline" id="exportFinancialBtn">
+                        <i class="fas fa-file-export"></i> تصدير البيانات
+                    </button>
+                </div>
             </div>
-            <div class="stat-card daily-profit-card">
-                <h3 class="stat-title">الأرباح اليومية</h3>
-                <div class="stat-value" id="dailyProfit">0 E.G</div>
-                <div class="stat-change">المبالغ المحصلة اليوم</div>
+            
+            <div class="financial-stats">
+                <div class="financial-stat">
+                    <div class="financial-stat-title">إجمالي الأرباح الشهرية</div>
+                    <div class="financial-stat-value" id="monthlyProfitTotal">0 E.G</div>
+                </div>
+                <div class="financial-stat">
+                    <div class="financial-stat-title">متوسط الأرباح اليومية</div>
+                    <div class="financial-stat-value" id="averageDailyProfit">0 E.G</div>
+                </div>
+                <div class="financial-stat">
+                    <div class="financial-stat-title">أعلى ربح يومي</div>
+                    <div class="financial-stat-value" id="highestDailyProfit">0 E.G</div>
+                </div>
+                <div class="financial-stat">
+                    <div class="financial-stat-title">عدد المشتركين الجدد</div>
+                    <div class="financial-stat-value" id="newMembersCount">0</div>
+                </div>
+                <div class="financial-stat">
+                    <div class="financial-stat-title">إجمالي المدفوعات</div>
+                    <div class="financial-stat-value" id="totalPaymentsAmount">0 E.G</div>
+                </div>
+                <div class="financial-stat">
+                    <div class="financial-stat-title">إجمالي الأرباح اليومية</div>
+                    <div class="financial-stat-value" id="totalDailyProfits">0 E.G</div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3 class="chart-title">الأرباح اليومية خلال الشهر الحالي</h3>
+                <canvas id="profitChart"></canvas>
+            </div>
+            
+            <div class="financial-details">
+                <div class="financial-table-container">
+                    <table class="financial-table">
+                        <thead>
+                            <tr>
+                                <th>اليوم</th>
+                                <th>التاريخ</th>
+                                <th>المبلغ المحصل</th>
+                                <th>عدد المشتركين الجدد</th>
+                                <th>المصادر</th>
+                            </tr>
+                        </thead>
+                        <tbody id="financialDetails">
+                            <!-- سيتم ملء هذا القسم بالبيانات من Firebase -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الإحصائيات المخفية -->
+        <div id="hiddenStats" class="hidden-stats">
+            <div class="stats-section">
+                <div class="stat-card active-members">
+                    <h3 class="stat-title">المشتركين النشطين</h3>
+                    <div class="stat-value" id="activeMembersCount">0</div>
+                    <div class="stat-change">اشتراكات سارية المفعول</div>
+                </div>
+                <div class="stat-card expired-members">
+                    <h3 class="stat-title">المشتركين المنتهية اشتراكاتهم</h3>
+                    <div class="stat-value" id="expiredMembersCount">0</div>
+                    <div class="stat-change">بحاجة إلى تجديد</div>
+                </div>
+                <div class="stat-card profit-card">
+                    <h3 class="stat-title">إجمالي الأرباح</h3>
+                    <div class="stat-value" id="totalProfit">0 E.G</div>
+                    <div class="stat-change">إجمالي المبالغ المحصلة</div>
+                </div>
+                <div class="stat-card daily-profit-card">
+                    <h3 class="stat-title">الأرباح اليومية</h3>
+                    <div class="stat-value" id="dailyProfit">0 E.G</div>
+                    <div class="stat-change">المبالغ المحصلة اليوم</div>
+                </div>
             </div>
         </div>
 
-        <div class="action-buttons" style="justify-content: flex-start; margin-bottom: 1.5rem;">
-            <button id="toggleFormBtn" class="btn">
-                <i class="fas fa-user-plus"></i> إضافة عضو جديد
-            </button>
-            <button id="addDailyProfitBtn" class="btn btn-daily-profit">
-                <i class="fas fa-plus-circle"></i> إضافة ربح يومي
-            </button>
-            <button id="saveDailyProfitBtn" class="btn btn-success" style="display: none;">
-                <i class="fas fa-save"></i> حفظ الربح اليومي
-            </button>
-            <button id="backupBtn" class="btn btn-info">
-                <i class="fas fa-database"></i> نسخ احتياطي
-            </button>
-            <button id="recalculateBtn" class="btn btn-warning">
-                <i class="fas fa-calculator"></i> إعادة حساب الأموال
-            </button>
-            <button id="clearPaymentsBtn" class="btn btn-danger">
-                <i class="fas fa-trash"></i> حذف جميع الأموال
-            </button>
-        </div>
+        <!-- زر عرض/إخفاء الإحصائيات -->
+        <button id="toggleStatsBtn" class="toggle-stats-btn">
+            <i class="fas fa-chart-bar"></i>
+        </button>
 
         <!-- نموذج إضافة عضو جديد -->
         <section id="addMemberSection" class="form-section">
@@ -1122,6 +1762,16 @@
                 <div class="form-group">
                     <label for="phoneNumber"><i class="fas fa-phone"></i> رقم الهاتف</label>
                     <input type="tel" id="phoneNumber" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="memberCode"><i class="fas fa-id-card"></i> كود العضو</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="memberCode" class="form-control" readonly>
+                        <button type="button" id="generateCodeBtn" class="btn btn-sm btn-info">
+                            <i class="fas fa-sync-alt"></i> توليد
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -1226,6 +1876,62 @@
                 </div>
             </form>
         </section>
+
+        <!-- نموذج إعدادات التليجرام -->
+        <section id="telegramSettingsSection" class="form-section" style="display: none;">
+            <h2><i class="fab fa-telegram"></i> إعدادات بوت التليجرام</h2>
+            <form id="telegramSettingsForm" class="form-grid">
+                <div class="form-group">
+                    <label for="telegramBotToken"><i class="fas fa-key"></i> رمز البوت (Bot Token)</label>
+                    <input type="text" id="telegramBotToken" class="form-control" placeholder="أدخل رمز بوت التليجرام">
+                </div>
+                
+                <div class="form-group">
+                    <label for="telegramChatId"><i class="fas fa-id-badge"></i> معرف المحادثة (Chat ID)</label>
+                    <input type="text" id="telegramChatId" class="form-control" placeholder="أدخل معرف المحادثة">
+                </div>
+                
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label for="telegramNotifications"><i class="fas fa-bell"></i> أنواع الإشعارات</label>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="notifyNewMembers" checked>
+                            <span>إشعارات الأعضاء الجدد</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="notifyPayments" checked>
+                            <span>إشعارات المدفوعات</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="notifyExpired" checked>
+                            <span>إشعارات الاشتراكات المنتهية</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" id="notifyDailyProfits" checked>
+                            <span>إشعارات الأرباح اليومية</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <button type="submit" class="btn btn-info" id="saveTelegramSettingsBtn" style="width: 100%;">
+                        <i class="fas fa-save"></i> حفظ الإعدادات
+                    </button>
+                </div>
+                
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <button type="button" class="btn btn-warning" id="testTelegramBtn" style="width: 100%;">
+                        <i class="fas fa-paper-plane"></i> اختبار الإرسال
+                    </button>
+                </div>
+                
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <button type="button" class="btn btn-danger" id="cancelTelegramSettingsBtn" style="width: 100%;">
+                        <i class="fas fa-times"></i> إلغاء
+                    </button>
+                </div>
+            </form>
+        </section>
         
         <!-- قسم المدفوعات -->
         <div class="accordion">
@@ -1247,6 +1953,11 @@
                                     <i class="fas fa-coins"></i>
                                     <span>سجل المدفوعات</span>
                                 </h3>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-success" id="addPaymentBtn">
+                                        <i class="fas fa-plus"></i> إضافة دفعة
+                                    </button>
+                                </div>
                             </div>
                             
                             <div class="table-responsive">
@@ -1301,10 +2012,20 @@
                             </div>
                         </div>
                         
-                        <!-- صندوق البحث -->
+                        <!-- صندوق البحث المحسن -->
                         <div class="search-container">
-                            <i class="fas fa-search search-icon"></i>
-                            <input type="text" id="searchInput" class="search-box" placeholder="ابحث عن مشترك بالاسم أو رقم الهاتف...">
+                            <div class="search-type-toggle active" id="searchByNameBtn">
+                                <i class="fas fa-user"></i>
+                                <span>البحث بالاسم</span>
+                            </div>
+                            <div class="search-type-toggle" id="searchByIdBtn">
+                                <i class="fas fa-id-card"></i>
+                                <span>البحث بالكود</span>
+                            </div>
+                            <div class="search-box-container">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" id="searchInput" class="search-box" placeholder="ابحث عن مشترك بالاسم أو رقم الهاتف...">
+                            </div>
                         </div>
                         
                         <div class="tab-content active" id="all-members">
@@ -1314,6 +2035,7 @@
                                         <tr>
                                             <th>اسم العضو</th>
                                             <th>رقم الهاتف</th>
+                                            <th>كود العضو</th>
                                             <th>بداية الاشتراك</th>
                                             <th>نهاية الاشتراك</th>
                                             <th>حالة الاشتراك</th>
@@ -1337,6 +2059,7 @@
                                         <tr>
                                             <th>اسم العضو</th>
                                             <th>رقم الهاتف</th>
+                                            <th>كود العضو</th>
                                             <th>بداية الاشتراك</th>
                                             <th>نهاية الاشتراك</th>
                                             <th>حالة الدفع</th>
@@ -1359,6 +2082,7 @@
                                         <tr>
                                             <th>اسم العضو</th>
                                             <th>رقم الهاتف</th>
+                                            <th>كود العضو</th>
                                             <th>بداية الاشتراك</th>
                                             <th>نهاية الاشتراك</th>
                                             <th>حالة الدفع</th>
@@ -1385,11 +2109,6 @@
         <span id="toast-message">تمت العملية بنجاح</span>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
-
     <script>
         // Firebase configuration
         const firebaseConfig = {
@@ -1413,9 +2132,15 @@
         const paymentsRef = database.ref('payments');
         const dailyProfitsRef = database.ref('dailyProfits');
         const backupRef = database.ref('backups');
+        const notificationsRef = database.ref('notifications');
+        const settingsRef = database.ref('settings');
 
         // DOM elements
         const toggleFormBtn = document.getElementById('toggleFormBtn');
+        const toggleFinancialBtn = document.getElementById('toggleFinancialBtn');
+        const toggleStatsBtn = document.getElementById('toggleStatsBtn');
+        const financialSection = document.getElementById('financialSection');
+        const hiddenStats = document.getElementById('hiddenStats');
         const addMemberSection = document.getElementById('addMemberSection');
         const memberForm = document.getElementById('memberForm');
         const membersList = document.getElementById('membersList');
@@ -1435,6 +2160,8 @@
         const cancelEditBtn = document.getElementById('cancelEditBtn');
         const cancelEditDiv = document.getElementById('cancelEditDiv');
         const memberIdInput = document.getElementById('memberId');
+        const memberCodeInput = document.getElementById('memberCode');
+        const generateCodeBtn = document.getElementById('generateCodeBtn');
         const tabs = document.querySelectorAll('.tab');
         const tabContents = document.querySelectorAll('.tab-content');
         const toast = document.getElementById('toast');
@@ -1443,8 +2170,6 @@
         const searchInput = document.getElementById('searchInput');
         const paymentsHeader = document.getElementById('paymentsHeader');
         const paymentsContent = document.getElementById('paymentsContent');
-        const addDailyProfitBtn = document.getElementById('addDailyProfitBtn');
-        const saveDailyProfitBtn = document.getElementById('saveDailyProfitBtn');
         const dailyProfitSection = document.getElementById('dailyProfitSection');
         const dailyProfitForm = document.getElementById('dailyProfitForm');
         const dailyProfitDate = document.getElementById('dailyProfitDate');
@@ -1456,6 +2181,39 @@
         const backupBtn = document.getElementById('backupBtn');
         const recalculateBtn = document.getElementById('recalculateBtn');
         const clearPaymentsBtn = document.getElementById('clearPaymentsBtn');
+        const restoreBtn = document.getElementById('restoreBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const viewDailyProfitsBtn = document.getElementById('viewDailyProfitsBtn');
+        const profitsDropdown = document.getElementById('profitsDropdown');
+        const profitsMenu = document.getElementById('profitsMenu');
+        const systemDropdown = document.getElementById('systemDropdown');
+        const systemMenu = document.getElementById('systemMenu');
+        const printFinancialBtn = document.getElementById('printFinancialBtn');
+        const exportFinancialBtn = document.getElementById('exportFinancialBtn');
+        const monthlyProfitTotal = document.getElementById('monthlyProfitTotal');
+        const averageDailyProfit = document.getElementById('averageDailyProfit');
+        const highestDailyProfit = document.getElementById('highestDailyProfit');
+        const newMembersCount = document.getElementById('newMembersCount');
+        const financialDetails = document.getElementById('financialDetails');
+        const profitChartCanvas = document.getElementById('profitChart');
+        const telegramSettingsSection = document.getElementById('telegramSettingsSection');
+        const telegramSettingsForm = document.getElementById('telegramSettingsForm');
+        const telegramBotToken = document.getElementById('telegramBotToken');
+        const telegramChatId = document.getElementById('telegramChatId');
+        const saveTelegramSettingsBtn = document.getElementById('saveTelegramSettingsBtn');
+        const testTelegramBtn = document.getElementById('testTelegramBtn');
+        const cancelTelegramSettingsBtn = document.getElementById('cancelTelegramSettingsBtn');
+        const notifyNewMembers = document.getElementById('notifyNewMembers');
+        const notifyPayments = document.getElementById('notifyPayments');
+        const notifyExpired = document.getElementById('notifyExpired');
+        const notifyDailyProfits = document.getElementById('notifyDailyProfits');
+        const telegramSetupBtn = document.getElementById('telegramSetupBtn');
+        const updateIndicator = document.getElementById('updateIndicator');
+        const searchByNameBtn = document.getElementById('searchByNameBtn');
+        const searchByIdBtn = document.getElementById('searchByIdBtn');
+        const addPaymentBtn = document.getElementById('addPaymentBtn');
+        const totalPaymentsAmount = document.getElementById('totalPaymentsAmount');
+        const totalDailyProfits = document.getElementById('totalDailyProfits');
 
         // متغيرات التطبيق
         let isEditMode = false;
@@ -1467,6 +2225,75 @@
         let dailyProfitTotal = 0;
         let backupInterval;
         let profitCheckInterval;
+        let profitChart = null;
+        let currentMonthData = [];
+        let usedCodes = new Set();
+        let telegramNotificationInterval;
+        let searchType = 'name'; // 'name' or 'id'
+        let telegramSettings = {
+            botToken: '',
+            chatId: '',
+            notifyNewMembers: true,
+            notifyPayments: true,
+            notifyExpired: true,
+            notifyDailyProfits: true
+        };
+
+        // توليد كود عشوائي فريد من 4 إلى 8 أرقام
+        function generateUniqueCode() {
+            const minLength = 4;
+            const maxLength = 8;
+            const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
+            
+            let code;
+            let attempts = 0;
+            const maxAttempts = 100;
+            
+            do {
+                code = '';
+                for (let i = 0; i < length; i++) {
+                    code += Math.floor(Math.random() * 10);
+                }
+                attempts++;
+                
+                if (attempts >= maxAttempts) {
+                    // إذا فشلنا في توليد كود فريد بعد عدة محاولات، نضيف بادئة زمنية
+                    code = Date.now().toString().slice(-length);
+                    break;
+                }
+            } while (usedCodes.has(code));
+            
+            usedCodes.add(code);
+            return code;
+        }
+
+        // تحديث قائمة الأكواد المستخدمة
+        function updateUsedCodes() {
+            usedCodes.clear();
+            allMembers.forEach(member => {
+                if (member.code) {
+                    usedCodes.add(member.code);
+                }
+            });
+        }
+
+        // إدارة القوائم المنسدلة
+        profitsDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+            profitsMenu.classList.toggle('show');
+            systemMenu.classList.remove('show');
+        });
+
+        systemDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+            systemMenu.classList.toggle('show');
+            profitsMenu.classList.remove('show');
+        });
+
+        document.addEventListener('click', function() {
+            profitsMenu.classList.remove('show');
+            systemMenu.classList.remove('show');
+        });
 
         // Accordion functionality
         paymentsHeader.addEventListener('click', () => {
@@ -1493,6 +2320,24 @@
         membersHeader.classList.add('active');
         membersContent.style.maxHeight = membersContent.scrollHeight + "px";
 
+        // عرض/إخفاء قسم التقارير المالية
+        toggleFinancialBtn.addEventListener('click', function() {
+            financialSection.classList.toggle('active');
+            
+            if (financialSection.classList.contains('active')) {
+                toggleFinancialBtn.innerHTML = '<i class="fas fa-times"></i> إغلاق التقارير';
+                financialSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                updateFinancialReport();
+            } else {
+                toggleFinancialBtn.innerHTML = '<i class="fas fa-chart-line"></i> التقارير المالية';
+            }
+        });
+
+        // عرض/إخفاء قسم الإحصائيات
+        toggleStatsBtn.addEventListener('click', function() {
+            hiddenStats.classList.toggle('active');
+        });
+
         // عرض/إخفاء نموذج الإضافة
         toggleFormBtn.addEventListener('click', function() {
             addMemberSection.classList.toggle('active');
@@ -1506,33 +2351,49 @@
             }
         });
 
+        // توليد كود عضو جديد
+        generateCodeBtn.addEventListener('click', function() {
+            memberCodeInput.value = generateUniqueCode();
+        });
+
         // عرض/إخفاء نموذج الربح اليومي
+        viewDailyProfitsBtn.addEventListener('click', function() {
+            dailyProfitSection.style.display = 'block';
+            dailyProfitSection.classList.add('active');
+            dailyProfitSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            profitsMenu.classList.remove('show');
+        });
+
         addDailyProfitBtn.addEventListener('click', function() {
             dailyProfitSection.style.display = 'block';
             dailyProfitSection.classList.add('active');
-            addDailyProfitBtn.style.display = 'none';
-            saveDailyProfitBtn.style.display = 'inline-flex';
             
             // تعيين تاريخ اليوم كقيمة افتراضية
             const today = new Date().toISOString().split('T')[0];
             dailyProfitDate.value = today;
             
             dailyProfitSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-
-        saveDailyProfitBtn.addEventListener('click', function() {
-            dailyProfitSection.style.display = 'none';
-            dailyProfitSection.classList.remove('active');
-            addDailyProfitBtn.style.display = 'inline-flex';
-            saveDailyProfitBtn.style.display = 'none';
+            profitsMenu.classList.remove('show');
         });
 
         cancelDailyProfitBtn.addEventListener('click', function() {
             dailyProfitSection.style.display = 'none';
             dailyProfitSection.classList.remove('active');
-            addDailyProfitBtn.style.display = 'inline-flex';
-            saveDailyProfitBtn.style.display = 'none';
             dailyProfitForm.reset();
+        });
+
+        // عرض/إخفاء إعدادات التليجرام
+        telegramSetupBtn.addEventListener('click', function() {
+            telegramSettingsSection.style.display = 'block';
+            telegramSettingsSection.classList.add('active');
+            telegramSettingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            systemMenu.classList.remove('show');
+        });
+
+        cancelTelegramSettingsBtn.addEventListener('click', function() {
+            telegramSettingsSection.style.display = 'none';
+            telegramSettingsSection.classList.remove('active');
+            telegramSettingsForm.reset();
         });
 
         // حساب تاريخ نهاية الاشتراك عند تغيير تاريخ البدء أو عدد الأشهر
@@ -1580,12 +2441,75 @@
             }, 3000);
         }
 
+        // إظهار مؤشر التحديث
+        function showUpdateIndicator() {
+            updateIndicator.classList.add('show');
+            setTimeout(() => {
+                updateIndicator.classList.remove('show');
+            }, 2000);
+        }
+
+        // إرسال إشعار عبر بوت التليجرام
+        async function sendTelegramNotification(message) {
+            if (!telegramSettings.botToken || !telegramSettings.chatId) {
+                console.warn('إعدادات التليجرام غير مكتملة');
+                return;
+            }
+            
+            try {
+                const url = `https://api.telegram.org/bot${telegramSettings.botToken}/sendMessage`;
+                const params = {
+                    chat_id: telegramSettings.chatId,
+                    text: message,
+                    parse_mode: 'HTML'
+                };
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(params)
+                });
+                
+                const data = await response.json();
+                
+                if (!data.ok) {
+                    console.error('فشل إرسال الإشعار عبر التليجرام:', data);
+                }
+                
+                // حفظ الإشعار في قاعدة البيانات
+                notificationsRef.push({
+                    message: message,
+                    type: 'telegram',
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    status: data.ok ? 'success' : 'failed'
+                });
+                
+                return data.ok;
+            } catch (error) {
+                console.error('حدث خطأ أثناء إرسال الإشعار:', error);
+                
+                // حفظ الإشعار الفاشل في قاعدة البيانات
+                notificationsRef.push({
+                    message: message,
+                    type: 'telegram',
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    status: 'failed',
+                    error: error.message
+                });
+                
+                return false;
+            }
+        }
+
         // إضافة/تعديل عضو
         memberForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
             const name = document.getElementById('memberName').value.trim();
             const phone = document.getElementById('phoneNumber').value.trim();
+            const code = memberCodeInput.value.trim();
             const startDate = startDateInput.value;
             const endDate = endDateInput.value;
             const subscriptionFee = parseFloat(subscriptionFeeInput.value);
@@ -1593,7 +2517,7 @@
             const paymentStatus = document.getElementById('paymentStatus').value;
             const notes = document.getElementById('notes').value.trim();
             
-            if (!name || !phone || !startDate || !endDate || isNaN(subscriptionFee)) {
+            if (!name || !phone || !code || !startDate || !endDate || isNaN(subscriptionFee)) {
                 showToast('الرجاء تعبئة جميع الحقول المطلوبة', 'error');
                 return;
             }
@@ -1606,6 +2530,7 @@
             const memberData = {
                 name: name,
                 phone: phone,
+                code: code,
                 startDate: startDate,
                 endDate: endDate,
                 subscriptionFee: subscriptionFee,
@@ -1623,6 +2548,12 @@
                     .then(() => {
                         showToast('تم تعديل بيانات العضو بنجاح');
                         resetForm();
+                        
+                        // إرسال إشعار بالتعديل إذا كان مفعلاً
+                        if (telegramSettings.notifyNewMembers) {
+                            const notificationMsg = `تم تعديل بيانات العضو:\nالاسم: <b>${name}</b>\nرقم الهاتف: <code>${phone}</code>\nكود العضو: <code>${code}</code>`;
+                            sendTelegramNotification(notificationMsg);
+                        }
                     })
                     .catch(error => {
                         showToast('حدث خطأ أثناء تعديل العضو: ' + error.message, 'error');
@@ -1647,6 +2578,15 @@
                     // تحديث الربح اليومي عند إضافة عضو جديد مع دفعة
                     if (amountPaid > 0) {
                         updateDailyProfit(amountPaid, 'اشتراك جديد: ' + name);
+                    }
+                    
+                    // تحديث التقارير المالية
+                    updateFinancialReport();
+                    
+                    // إرسال إشعار بإضافة عضو جديد إذا كان مفعلاً
+                    if (telegramSettings.notifyNewMembers) {
+                        const notificationMsg = `تم إضافة عضو جديد:\nالاسم: <b>${name}</b>\nرقم الهاتف: <code>${phone}</code>\nكود العضو: <code>${code}</code>\nالمبلغ المدفوع: <b>${amountPaid} E.G</b>`;
+                        sendTelegramNotification(notificationMsg);
                     }
                 })
                 .catch(error => {
@@ -1695,6 +2635,15 @@
                     
                     // تحديث الربح اليومي
                     updateDailyProfit(amount, source);
+                    
+                    // تحديث التقارير المالية
+                    updateFinancialReport();
+                    
+                    // إرسال إشعار بالربح اليومي إذا كان مفعلاً
+                    if (telegramSettings.notifyDailyProfits) {
+                        const notificationMsg = `تم إضافة ربح يومي جديد:\nالمبلغ: <b>${amount} E.G</b>\nالمصدر: <b>${source}</b>`;
+                        sendTelegramNotification(notificationMsg);
+                    }
                 })
                 .catch(error => {
                     showToast('حدث خطأ أثناء إضافة الربح اليومي: ' + error.message, 'error');
@@ -1723,6 +2672,15 @@
                     // تحديث إجمالي الأرباح
                     totalProfitAmount += amount;
                     totalProfit.textContent = `${totalProfitAmount} E.G`;
+                    
+                    // تحديث الربح اليومي
+                    updateDailyProfit(amount, source);
+                    
+                    // إرسال إشعار بالدفعة إذا كان مفعلاً
+                    if (telegramSettings.notifyPayments) {
+                        const notificationMsg = `تم تسجيل دفعة جديدة:\nالاسم: <b>${memberName}</b>\nالمبلغ: <b>${amount} E.G</b>\nالمصدر: <b>${source}</b>`;
+                        sendTelegramNotification(notificationMsg);
+                    }
                 })
                 .catch(error => {
                     console.error('Error recording payment:', error);
@@ -1739,6 +2697,9 @@
             // تحديث إجمالي الأرباح
             totalProfitAmount += amount;
             totalProfit.textContent = `${totalProfitAmount} E.G`;
+            
+            // تحديث التقارير المالية
+            updateFinancialReport();
         }
 
         // حساب الربح اليومي من البيانات
@@ -1767,21 +2728,263 @@
 
         // حساب إجمالي الأرباح من البيانات
         function calculateTotalProfit() {
-            let total = 0;
+            let totalPayments = 0;
+            let totalDaily = 0;
             
             // حساب من المدفوعات
             allPayments.forEach(payment => {
-                total += payment.amount;
+                totalPayments += payment.amount;
             });
             
             // حساب من الأرباح اليومية
             dailyProfits.forEach(profit => {
-                total += profit.amount;
+                totalDaily += profit.amount;
             });
             
-            totalProfitAmount = total;
-            totalProfit.textContent = `${totalProfitAmount} E.G`;
+            totalProfitAmount = totalPayments + totalDaily;
+            totalProfit.textContent = `${totalProfitAmount.toFixed(2)} E.G`;
+            totalPaymentsAmount.textContent = `${totalPayments.toFixed(2)} E.G`;
+            totalDailyProfits.textContent = `${totalDaily.toFixed(2)} E.G`;
         }
+
+        // تحديث التقارير المالية
+        function updateFinancialReport() {
+            showUpdateIndicator();
+            
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth() + 1;
+            const currentYear = currentDate.getFullYear();
+            
+            // فلترة البيانات للشهر الحالي
+            currentMonthData = dailyProfits.filter(profit => {
+                const profitDate = new Date(profit.date);
+                return profitDate.getMonth() + 1 === currentMonth && profitDate.getFullYear() === currentYear;
+            });
+            
+            // فلترة المشتركين الجدد لهذا الشهر
+            const newMembersThisMonth = allMembers.filter(member => {
+                const memberDate = new Date(member.startDate);
+                return memberDate.getMonth() + 1 === currentMonth && memberDate.getFullYear() === currentYear;
+            });
+            
+            // حساب الإحصائيات
+            const monthlyProfit = currentMonthData.reduce((sum, profit) => sum + profit.amount, 0);
+            const avgDailyProfit = monthlyProfit / currentDate.getDate();
+            const maxDailyProfit = currentMonthData.length > 0 ? 
+                Math.max(...currentMonthData.map(profit => profit.amount)) : 0;
+            
+            // تحديث العناصر في الصفحة
+            monthlyProfitTotal.textContent = `${monthlyProfit.toFixed(2)} E.G`;
+            averageDailyProfit.textContent = `${avgDailyProfit.toFixed(2)} E.G`;
+            highestDailyProfit.textContent = `${maxDailyProfit.toFixed(2)} E.G`;
+            newMembersCount.textContent = newMembersThisMonth.length;
+            
+            // إنشاء بيانات المخطط البياني
+            const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+            const labels = Array.from({length: daysInMonth}, (_, i) => i + 1);
+            
+            const profitsByDay = Array(daysInMonth).fill(0);
+            const membersByDay = Array(daysInMonth).fill(0);
+            
+            currentMonthData.forEach(profit => {
+                const day = new Date(profit.date).getDate();
+                profitsByDay[day - 1] += profit.amount;
+            });
+            
+            newMembersThisMonth.forEach(member => {
+                const day = new Date(member.startDate).getDate();
+                membersByDay[day - 1]++;
+            });
+            
+            // تحديث المخطط البياني
+            updateProfitChart(labels, profitsByDay, membersByDay);
+            
+            // تحديث الجدول التفصيلي
+            updateFinancialDetailsTable(labels, profitsByDay, membersByDay);
+        }
+        
+        // تحديث المخطط البياني
+        function updateProfitChart(labels, profitsData, membersData) {
+            const ctx = profitChartCanvas.getContext('2d');
+            
+            // إذا كان المخطط موجودًا بالفعل، قم بتدميره أولاً
+            if (profitChart) {
+                profitChart.destroy();
+            }
+            
+            profitChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'الأرباح اليومية (E.G)',
+                            data: profitsData,
+                            backgroundColor: 'rgba(58, 123, 237, 0.7)',
+                            borderColor: 'rgba(58, 123, 237, 1)',
+                            borderWidth: 1,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'عدد المشتركين الجدد',
+                            data: membersData,
+                            backgroundColor: 'rgba(124, 58, 237, 0.7)',
+                            borderColor: 'rgba(124, 58, 237, 1)',
+                            borderWidth: 1,
+                            type: 'line',
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'الأرباح اليومية (E.G)'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'عدد المشتركين الجدد'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'أيام الشهر'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'الأرباح اليومية وعدد المشتركين الجدد خلال الشهر الحالي'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.datasetIndex === 0) {
+                                        label += context.raw.toFixed(2) + ' E.G';
+                                    } else {
+                                        label += context.raw;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // تحديث الجدول التفصيلي
+        function updateFinancialDetailsTable(labels, profitsData, membersData) {
+            financialDetails.innerHTML = '';
+            
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth() + 1;
+            const currentYear = currentDate.getFullYear();
+            
+            // فلترة الأرباح اليومية لهذا الشهر
+            const dailyProfitsThisMonth = dailyProfits.filter(profit => {
+                const profitDate = new Date(profit.date);
+                return profitDate.getMonth() + 1 === currentMonth && profitDate.getFullYear() === currentYear;
+            });
+            
+            // فلترة المشتركين الجدد لهذا الشهر
+            const newMembersThisMonth = allMembers.filter(member => {
+                const memberDate = new Date(member.startDate);
+                return memberDate.getMonth() + 1 === currentMonth && memberDate.getFullYear() === currentYear;
+            });
+            
+            // تجميع المصادر لكل يوم
+            const sourcesByDay = {};
+            dailyProfitsThisMonth.forEach(profit => {
+                const day = new Date(profit.date).getDate();
+                if (!sourcesByDay[day]) {
+                    sourcesByDay[day] = [];
+                }
+                sourcesByDay[day].push(profit.source);
+            });
+            
+            // إضافة صف لكل يوم في الشهر
+            labels.forEach((day, index) => {
+                const dayProfit = profitsData[index];
+                const dayMembers = membersData[index];
+                const daySources = sourcesByDay[day] || [];
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${day}</td>
+                    <td>${day}/${currentMonth}/${currentYear}</td>
+                    <td class="day-profit">${dayProfit.toFixed(2)} E.G</td>
+                    <td class="day-members">${dayMembers}</td>
+                    <td>${daySources.join('، ')}</td>
+                `;
+                
+                financialDetails.appendChild(row);
+            });
+        }
+
+        // طباعة التقرير المالي
+        printFinancialBtn.addEventListener('click', function() {
+            const printContent = financialSection.innerHTML;
+            const originalContent = document.body.innerHTML;
+            
+            document.body.innerHTML = `
+                <div style="direction: rtl; font-family: 'Tajawal', sans-serif; padding: 20px;">
+                    <h1 style="text-align: center; color: #4361ee;">تقرير الأرباح الشهرية</h1>
+                    <h2 style="text-align: center; color: #3f37c9;">${new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long' })}</h2>
+                    ${printContent}
+                </div>
+            `;
+            
+            window.print();
+            document.body.innerHTML = originalContent;
+        });
+
+        // تصدير البيانات المالية
+        exportFinancialBtn.addEventListener('click', function() {
+            const currentDate = new Date();
+            const monthName = currentDate.toLocaleDateString('ar-EG', { month: 'long' });
+            const year = currentDate.getFullYear();
+            
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "تقرير الأرباح الشهرية - " + monthName + " " + year + "\n\n";
+            csvContent += "اليوم,التاريخ,المبلغ المحصل,عدد المشتركين الجدد,المصادر\n";
+            
+            const rows = financialDetails.querySelectorAll('tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const rowData = Array.from(cells).map(cell => cell.textContent.replace(' E.G', '')).join(',');
+                csvContent += rowData + "\n";
+            });
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `financial_report_${monthName}_${year}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
 
         // إلغاء التعديل
         cancelEditBtn.addEventListener('click', cancelEdit);
@@ -1804,6 +3007,7 @@
             startDateInput.value = today;
             
             document.getElementById('paymentStatus').value = 'paid';
+            memberCodeInput.value = generateUniqueCode();
             calculateEndDate();
         }
 
@@ -1817,6 +3021,7 @@
                     memberIdInput.value = memberId;
                     document.getElementById('memberName').value = member.name;
                     document.getElementById('phoneNumber').value = member.phone;
+                    memberCodeInput.value = member.code || generateUniqueCode();
                     
                     const startDate = new Date(member.startDate);
                     const endDate = new Date(member.endDate);
@@ -1858,6 +3063,13 @@
                         if (isEditMode && currentMemberId === memberId) {
                             cancelEdit();
                         }
+                        
+                        // إرسال إشعار بالحذف إذا كان مفعلاً
+                        const member = allMembers.find(m => m.id === memberId);
+                        if (member && telegramSettings.notifyNewMembers) {
+                            const notificationMsg = `تم حذف العضو:\nالاسم: <b>${member.name}</b>\nكود العضو: <code>${member.code || 'غير محدد'}</code>`;
+                            sendTelegramNotification(notificationMsg);
+                        }
                     })
                     .catch(error => {
                         showToast('حدث خطأ أثناء حذف العضو: ' + error.message, 'error');
@@ -1896,6 +3108,13 @@
                 })
                 .then(() => {
                     showToast('تم تجديد الاشتراك بنجاح لمدة شهر إضافي');
+                    
+                    // إرسال إشعار بالتجديد إذا كان مفعلاً
+                    const member = allMembers.find(m => m.id === memberId);
+                    if (member && telegramSettings.notifyPayments) {
+                        const notificationMsg = `تم تجديد اشتراك العضو:\nالاسم: <b>${member.name}</b>\nكود العضو: <code>${member.code || 'غير محدد'}</code>\nتاريخ النهاية الجديد: <b>${formatDate(newEndDate)}</b>`;
+                        sendTelegramNotification(notificationMsg);
+                    }
                 })
                 .catch(error => {
                     showToast('حدث خطأ أثناء تجديد الاشتراك: ' + error.message, 'error');
@@ -1934,14 +3153,34 @@
             }
             
             const filteredMembers = allMembers.filter(member => {
-                return (
-                    member.name.toLowerCase().includes(normalizedQuery) ||
-                    member.phone.includes(normalizedQuery)
-                );
+                if (searchType === 'name') {
+                    return member.name.toLowerCase().includes(normalizedQuery) || 
+                           member.phone.toLowerCase().includes(normalizedQuery);
+                } else {
+                    return member.code.toLowerCase().includes(normalizedQuery) || 
+                           member.id.toLowerCase().includes(normalizedQuery);
+                }
             });
             
             renderMembers(filteredMembers);
         }
+
+        // تغيير نوع البحث
+        searchByNameBtn.addEventListener('click', function() {
+            searchType = 'name';
+            searchByNameBtn.classList.add('active');
+            searchByIdBtn.classList.remove('active');
+            searchInput.placeholder = 'ابحث عن مشترك بالاسم أو رقم الهاتف...';
+            searchMembers(searchInput.value);
+        });
+
+        searchByIdBtn.addEventListener('click', function() {
+            searchType = 'id';
+            searchByIdBtn.classList.add('active');
+            searchByNameBtn.classList.remove('active');
+            searchInput.placeholder = 'ابحث عن مشترك بالكود أو الرقم التعريفي...';
+            searchMembers(searchInput.value);
+        });
 
         // عرض المشتركين في الجداول
         function renderMembers(members) {
@@ -1975,8 +3214,12 @@
                 const row = document.createElement('tr');
                 row.className = isActive ? 'active-member' : 'expired-member';
                 row.innerHTML = `
-                    <td><div class="member-name">${member.name}</div></td>
+                    <td>
+                        <div class="member-name">${member.name}</div>
+                        <div class="member-id">ID: ${member.id}</div>
+                    </td>
                     <td>${member.phone}</td>
+                    <td>${member.code || 'غير محدد'}</td>
                     <td>${formatDate(member.startDate)}</td>
                     <td>${formatDate(member.endDate)}</td>
                     <td>
@@ -1995,16 +3238,16 @@
                     <td class="amount ${amountClass}">${amountText}</td>
                     <td>
                         <div class="action-buttons">
-                            <button class="btn btn-sm" onclick="editMember('${member.id}')" title="تعديل">
+                            <button class="btn btn-sm neon-border" onclick="editMember('${member.id}')" title="تعديل">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteMember('${member.id}')" title="حذف">
+                            <button class="btn btn-sm btn-danger neon-border" onclick="deleteMember('${member.id}')" title="حذف">
                                 <i class="fas fa-trash"></i>
                             </button>
-                            ${!isActive ? `<button class="btn btn-sm btn-success" onclick="renewSubscription('${member.id}')" title="تجديد">
+                            ${!isActive ? `<button class="btn btn-sm btn-success neon-border" onclick="renewSubscription('${member.id}')" title="تجديد">
                                 <i class="fas fa-sync-alt"></i>
                             </button>` : ''}
-                            ${member.notes ? `<button class="btn btn-sm btn-profit" onclick="showNotes('${member.id}')" title="عرض الملاحظات">
+                            ${member.notes ? `<button class="btn btn-sm btn-profit neon-border" onclick="showNotes('${member.id}')" title="عرض الملاحظات">
                                 <i class="fas fa-sticky-note"></i>
                             </button>` : ''}
                         </div>
@@ -2017,8 +3260,12 @@
                     const activeRow = document.createElement('tr');
                     activeRow.className = 'active-member';
                     activeRow.innerHTML = `
-                        <td><div class="member-name">${member.name}</div></td>
+                        <td>
+                            <div class="member-name">${member.name}</div>
+                            <div class="member-id">ID: ${member.id}</div>
+                        </td>
                         <td>${member.phone}</td>
+                        <td>${member.code || 'غير محدد'}</td>
                         <td>${formatDate(member.startDate)}</td>
                         <td>${formatDate(member.endDate)}</td>
                         <td>
@@ -2031,13 +3278,13 @@
                         <td class="amount ${amountClass}">${amountText}</td>
                         <td>
                             <div class="action-buttons">
-                                <button class="btn btn-sm" onclick="editMember('${member.id}')" title="تعديل">
+                                <button class="btn btn-sm neon-border" onclick="editMember('${member.id}')" title="تعديل">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteMember('${member.id}')" title="حذف">
+                                <button class="btn btn-sm btn-danger neon-border" onclick="deleteMember('${member.id}')" title="حذف">
                                     <i class="fas fa-trash"></i>
                                 </button>
-                                ${member.notes ? `<button class="btn btn-sm btn-profit" onclick="showNotes('${member.id}')" title="عرض الملاحظات">
+                                ${member.notes ? `<button class="btn btn-sm btn-profit neon-border" onclick="showNotes('${member.id}')" title="عرض الملاحظات">
                                     <i class="fas fa-sticky-note"></i>
                                 </button>` : ''}
                             </div>
@@ -2050,8 +3297,12 @@
                     const expiredRow = document.createElement('tr');
                     expiredRow.className = 'expired-member';
                     expiredRow.innerHTML = `
-                        <td><div class="member-name">${member.name}</div></td>
+                        <td>
+                            <div class="member-name">${member.name}</div>
+                            <div class="member-id">ID: ${member.id}</div>
+                        </td>
                         <td>${member.phone}</td>
+                        <td>${member.code || 'غير محدد'}</td>
                         <td>${formatDate(member.startDate)}</td>
                         <td>${formatDate(member.endDate)}</td>
                         <td>
@@ -2064,16 +3315,16 @@
                         <td class="amount ${amountClass}">${amountText}</td>
                         <td>
                             <div class="action-buttons">
-                                <button class="btn btn-sm btn-success" onclick="renewSubscription('${member.id}')" title="تجديد">
+                                <button class="btn btn-sm btn-success neon-border" onclick="renewSubscription('${member.id}')" title="تجديد">
                                     <i class="fas fa-sync-alt"></i>
                                 </button>
-                                <button class="btn btn-sm" onclick="editMember('${member.id}')" title="تعديل">
+                                <button class="btn btn-sm neon-border" onclick="editMember('${member.id}')" title="تعديل">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteMember('${member.id}')" title="حذف">
+                                <button class="btn btn-sm btn-danger neon-border" onclick="deleteMember('${member.id}')" title="حذف">
                                     <i class="fas fa-trash"></i>
                                 </button>
-                                ${member.notes ? `<button class="btn btn-sm btn-profit" onclick="showNotes('${member.id}')" title="عرض الملاحظات">
+                                ${member.notes ? `<button class="btn btn-sm btn-profit neon-border" onclick="showNotes('${member.id}')" title="عرض الملاحظات">
                                     <i class="fas fa-sticky-note"></i>
                                 </button>` : ''}
                             </div>
@@ -2116,7 +3367,7 @@
             const member = allMembers.find(m => m.id === memberId);
             if (!member || !member.notes) return;
             
-            alert(`ملاحظات عن المشترك ${member.name}:\n\n${member.notes}`);
+            alert(`ملاحظات عن المشترك ${member.name} (ID: ${memberId}):\n\n${member.notes}`);
         }
 
         // إنشاء نسخة احتياطية
@@ -2158,6 +3409,7 @@
                 renderPayments();
                 calculateTotalProfit();
                 calculateDailyProfit();
+                updateUsedCodes();
                 
                 showToast('تم تحميل النسخة الاحتياطية المحلية');
             } catch (error) {
@@ -2170,6 +3422,7 @@
             if (confirm('هل تريد إعادة حساب جميع الأموال المحصلة؟ سيتم تحديث الإحصائيات بناءً على البيانات الحالية.')) {
                 calculateTotalProfit();
                 calculateDailyProfit();
+                updateFinancialReport();
                 showToast('تم إعادة حساب جميع الأموال بنجاح');
             }
         }
@@ -2191,6 +3444,67 @@
             }
         }
 
+        // حفظ إعدادات التليجرام
+        function saveTelegramSettings() {
+            const settings = {
+                botToken: telegramBotToken.value.trim(),
+                chatId: telegramChatId.value.trim(),
+                notifyNewMembers: notifyNewMembers.checked,
+                notifyPayments: notifyPayments.checked,
+                notifyExpired: notifyExpired.checked,
+                notifyDailyProfits: notifyDailyProfits.checked
+            };
+            
+            settingsRef.child('telegram').set(settings)
+                .then(() => {
+                    showToast('تم حفظ إعدادات التليجرام بنجاح');
+                    loadTelegramSettings();
+                })
+                .catch(error => {
+                    showToast('حدث خطأ أثناء حفظ الإعدادات: ' + error.message, 'error');
+                });
+        }
+
+        // تحميل إعدادات التليجرام
+        function loadTelegramSettings() {
+            settingsRef.child('telegram').once('value')
+                .then(snapshot => {
+                    const settings = snapshot.val();
+                    if (settings) {
+                        telegramSettings = settings;
+                        
+                        telegramBotToken.value = settings.botToken || '';
+                        telegramChatId.value = settings.chatId || '';
+                        notifyNewMembers.checked = settings.notifyNewMembers !== false;
+                        notifyPayments.checked = settings.notifyPayments !== false;
+                        notifyExpired.checked = settings.notifyExpired !== false;
+                        notifyDailyProfits.checked = settings.notifyDailyProfits !== false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading Telegram settings:', error);
+                });
+        }
+
+        // اختبار إرسال إشعار عبر التليجرام
+        function testTelegramNotification() {
+            if (!telegramBotToken.value || !telegramChatId.value) {
+                showToast('الرجاء إدخال رمز البوت ومعرف المحادثة', 'error');
+                return;
+            }
+            
+            const testMessage = 'هذا إشعار اختبار من نظام إدارة النادي الرياضي\nتم بنجاح ✅';
+            
+            sendTelegramNotification(testMessage)
+                .then(success => {
+                    if (success) {
+                        showToast('تم إرسال إشعار الاختبار بنجاح');
+                    } else {
+                        showToast('فشل إرسال إشعار الاختبار', 'error');
+                    }
+                });
+        }
+
         // تحديث قوائم المشتركين عند تغيير البيانات في Firebase
         membersRef.on('value', function(snapshot) {
             allMembers = [];
@@ -2202,6 +3516,11 @@
             });
             
             renderMembers(allMembers);
+            updateFinancialReport();
+            updateUsedCodes();
+            
+            // التحقق من الاشتراكات المنتهية وإرسال إشعارات
+            checkExpiredSubscriptions();
         });
 
         // تحديث المدفوعات عند تغيير البيانات في Firebase
@@ -2216,6 +3535,7 @@
             
             renderPayments();
             calculateTotalProfit();
+            updateFinancialReport();
         });
 
         // تحديث الأرباح اليومية
@@ -2230,7 +3550,41 @@
             
             calculateDailyProfit();
             calculateTotalProfit();
+            updateFinancialReport();
         });
+
+        // التحقق من الاشتراكات المنتهية وإرسال إشعارات
+        function checkExpiredSubscriptions() {
+            if (!telegramSettings.notifyExpired) return;
+            
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            const expiredMembers = allMembers.filter(member => {
+                const endDate = new Date(member.endDate);
+                return endDate < today;
+            });
+            
+            const expiringSoonMembers = allMembers.filter(member => {
+                const endDate = new Date(member.endDate);
+                return endDate >= today && endDate <= tomorrow;
+            });
+            
+            // إرسال إشعارات للاشتراكات المنتهية
+            if (expiredMembers.length > 0) {
+                const names = expiredMembers.map(m => m.name).join('، ');
+                const notificationMsg = `تحذير: هناك <b>${expiredMembers.length}</b> اشتراكات منتهية\nالأسماء: <b>${names}</b>`;
+                sendTelegramNotification(notificationMsg);
+            }
+            
+            // إرسال إشعارات للاشتراكات التي ستنتهي قريباً
+            if (expiringSoonMembers.length > 0) {
+                const names = expiringSoonMembers.map(m => m.name).join('، ');
+                const notificationMsg = `تنبيه: هناك <b>${expiringSoonMembers.length}</b> اشتراكات ستنتهي قريباً\nالأسماء: <b>${names}</b>`;
+                sendTelegramNotification(notificationMsg);
+            }
+        }
 
         // البحث عند كتابة نص في صندوق البحث
         searchInput.addEventListener('input', function() {
@@ -2246,6 +3600,50 @@
         // حذف جميع المدفوعات
         clearPaymentsBtn.addEventListener('click', clearAllPayments);
 
+        // استعادة النسخة الاحتياطية
+        restoreBtn.addEventListener('click', function() {
+            if (confirm('هل تريد استعادة النسخة الاحتياطية المحلية؟ سيتم استبدال البيانات الحالية.')) {
+                restoreFromLocalBackup();
+            }
+        });
+
+        // إعدادات النظام
+        settingsBtn.addEventListener('click', function() {
+            showToast('هذه الميزة قيد التطوير', 'warning');
+        });
+
+        // حفظ إعدادات التليجرام
+        telegramSettingsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveTelegramSettings();
+        });
+
+        // اختبار إرسال إشعار التليجرام
+        testTelegramBtn.addEventListener('click', testTelegramNotification);
+
+        // إضافة دفعة جديدة
+        addPaymentBtn.addEventListener('click', function() {
+            const memberName = prompt('أدخل اسم العضو:');
+            if (!memberName) return;
+            
+            const member = allMembers.find(m => m.name === memberName);
+            if (!member) {
+                showToast('لم يتم العثور على العضو', 'error');
+                return;
+            }
+            
+            const amount = parseFloat(prompt('أدخل مبلغ الدفعة:'));
+            if (isNaN(amount) || amount <= 0) {
+                showToast('المبلغ غير صحيح', 'error');
+                return;
+            }
+            
+            const source = prompt('أدخل مصدر الدفعة (اختياري):') || 'دفعة يدوية';
+            const notes = prompt('أدخل ملاحظات (اختياري):') || 'لا توجد ملاحظات';
+            
+            recordPayment(member.id, member.name, member.phone, amount, source, notes);
+        });
+
         // التحميل الأولي للصفحة
         document.addEventListener('DOMContentLoaded', function() {
             resetForm();
@@ -2255,14 +3653,23 @@
             dailyProfitDate.value = today;
             calculateEndDate();
             
+            // تعيين نوع البحث الافتراضي
+            searchByNameBtn.classList.add('active');
+            
             // استعادة النسخة الاحتياطية من localStorage إذا وجدت
             restoreFromLocalBackup();
+            
+            // تحميل إعدادات التليجرام
+            loadTelegramSettings();
             
             // إنشاء نسخة احتياطية كل ساعة
             backupInterval = setInterval(createBackup, 60 * 60 * 1000);
             
             // مراجعة الربح اليومي كل دقيقة
             profitCheckInterval = setInterval(calculateDailyProfit, 60 * 1000);
+            
+            // التحقق من الاشتراكات المنتهية كل 6 ساعات
+            telegramNotificationInterval = setInterval(checkExpiredSubscriptions, 6 * 60 * 60 * 1000);
             
             // جعل الدوال متاحة للاستدعاء من الأحداث المضمنة في HTML
             window.editMember = editMember;
@@ -2275,6 +3682,7 @@
         window.addEventListener('beforeunload', function() {
             clearInterval(backupInterval);
             clearInterval(profitCheckInterval);
+            clearInterval(telegramNotificationInterval);
         });
     </script>
 </body>
